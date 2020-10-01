@@ -1,9 +1,127 @@
 {
   "openapi": "3.0.2",
   "info": {
-    "title": "API Title",
-    "version": "1.0"
+    "title": "Open League",
+    "version": "1.0",
+    "description": "Helping to host a league"
   },
-  "servers": [{ "url": "https://api.server.test/v1" }],
-  "paths": {}
+  "servers": [{ "url": "https://openleague.gg/api/v1" }],
+  "tags": [
+    {
+      "name": "auth"
+    }
+  ],
+  "paths": {
+    "/auth/signin": {
+      "post": {
+        "tags": ["auth"],
+        "description": "Authenticate accounts to gain permissions",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "token": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "accessToken": {
+                      "type": "string"
+                    },
+                    "refreshToken": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "412": {
+            "description": "Precondition Failed"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/auth/signup": {
+      "post": {
+        "tags": ["auth"],
+        "description": "Create an account with a name, email, and password",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "email": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "name": {
+                "schema": {
+                  "type": "string",
+                  "example": "이미 같은 이름이 존재합니다"
+                }
+              },
+              "email": {
+                "schema": {
+                  "type": "string",
+                  "example": "이미 같은 이메일이 존재합니다"
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "Precondition Failed"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    }
+  }
 }
