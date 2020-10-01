@@ -5,8 +5,8 @@ import { connect } from 'mongoose';
 import morgan from 'morgan';
 import swagger from 'swagger-ui-express';
 
-import document from '../swagger.json';
 import router from './routes/index';
+import document from './swagger.json';
 
 const app = express();
 
