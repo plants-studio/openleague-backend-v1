@@ -3,7 +3,9 @@ import { config } from 'dotenv-safe';
 import express, { json, urlencoded } from 'express';
 import { connect } from 'mongoose';
 import morgan from 'morgan';
+import swagger from 'swagger-ui-express';
 
+import document from '../swagger.json';
 import router from './routes/index';
 
 const app = express();
@@ -14,6 +16,8 @@ app.use(urlencoded({ extended: false }));
 app.use(cookieParser());
 
 app.use('/', router);
+app.use('/api-docs', swagger.serve);
+app.get('/api-docs', swagger.setup(document));
 
 config();
 
