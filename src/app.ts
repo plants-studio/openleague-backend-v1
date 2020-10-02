@@ -16,6 +16,7 @@ app.use(urlencoded({ extended: false }));
 app.use(cookieParser());
 
 app.use('/', router);
+
 app.use('/api-docs', swagger.serve);
 app.get('/api-docs', swagger.setup(document));
 
