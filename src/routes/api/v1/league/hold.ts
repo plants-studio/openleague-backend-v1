@@ -22,7 +22,7 @@ router.post('/', auth, (req: IRequest, res) => {
     member,
     reward,
   });
-  newLeague.save((err) => {
+  newLeague.save((err: any) => {
     if (err) {
       console.error(err);
       res.sendStatus(500);

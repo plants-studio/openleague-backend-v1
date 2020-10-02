@@ -30,7 +30,7 @@ router.post('/', async (req, res) => {
     email,
     password: `${encrypt}|${salt}`,
   });
-  newUser.save((err) => {
+  newUser.save((err: any) => {
     if (err) {
       console.error(err);
       res.sendStatus(500);
