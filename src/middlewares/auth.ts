@@ -3,17 +3,25 @@ import { verify } from 'jsonwebtoken';
 
 import { IUser } from '../models/User';
 
-export default (req: Request, res: Response, next: NextFunction) => {
-  try {
-    const token = req.headers.authorization?.split(' ')[1];
-    const verified = JSON.parse(JSON.stringify(verify(token!, process.env.ACCESS_KEY!)));
-    req.token = verified;
-    next();
-  } catch {
-    res.sendStatus(401);
-  }
-};
+export interface IRequest extends Request {
+  token?: object;
+}
 
 export interface IToken {
   user?: IUser;
 }
+
+export default (req: IRequest, res: Response, next: NextFunction) => {
+  try {
+    if (req.headers.authorization?.startsWith('Bearer ')) {
+      const token = req.headers.authorization.substring(7);
+      const verified = JSON.parse(JSON.stringify(verify(token!, process.env.ACCESS_KEY!)));
+      req.token = verified;
+      next();
+    } else {
+      res.sendStatus(401);
+    }
+  } catch {
+    res.sendStatus(401);
+  }
+};
