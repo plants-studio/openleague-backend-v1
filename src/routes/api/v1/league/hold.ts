@@ -1,25 +1,25 @@
 import { Router } from 'express';
 
-import auth, { IToken } from '../../../../middlewares/auth';
+import auth, { IRequest, IToken } from '../../../../middlewares/auth';
 import League from '../../../../models/League';
 
 const router = Router();
 
-router.post('/', auth, (req, res) => {
-  const user: IToken | undefined = req.token;
+router.post('/', auth, (req: IRequest, res) => {
+  const verified: IToken | undefined = req.token;
   const {
-    game, headcount, current, reward,
+    game, max, member, reward,
   } = req.body;
-  if (!(game && headcount && current && reward)) {
+  if (!(game && max && member && reward)) {
     res.sendStatus(412);
     return;
   }
 
   const newLeague = new League({
-    host: user?.user?.email,
+    host: verified?.user?.email,
     game,
-    headcount,
-    current,
+    max,
+    member,
     reward,
   });
   newLeague.save((err) => {
