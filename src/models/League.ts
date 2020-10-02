@@ -1,4 +1,5 @@
 import { Document, model, Schema } from 'mongoose';
+import mongoosePaginate from 'mongoose-paginate-v2';
 
 const League = new Schema({
   host: String,
@@ -7,6 +8,8 @@ const League = new Schema({
   member: [String],
   reward: String,
 });
+
+League.plugin(mongoosePaginate);
 
 export default model('League', League);
 
