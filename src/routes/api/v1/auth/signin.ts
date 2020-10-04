@@ -13,7 +13,7 @@ router.post('/', async (req, res) => {
     return;
   }
 
-  const user: IUser | null = await User.findOne({ email });
+  const user: IUser = await User.findOne({ email });
   if (!user) {
     res.sendStatus(404);
     return;
