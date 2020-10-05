@@ -1,7 +1,8 @@
 import { pbkdf2Sync, randomBytes } from 'crypto';
 import { Router } from 'express';
 
-import User from '../../../../models/User';
+import Friends, { IFriends } from '../../../../models/Friends';
+import User, { IUser } from '../../../../models/User';
 
 const router = Router();
 
@@ -25,19 +26,28 @@ router.post('/', async (req, res) => {
 
   const salt = randomBytes(16).toString('base64');
   const encrypt = pbkdf2Sync(password, salt, 100000, 64, 'SHA512').toString('base64');
-  const newUser = new User({
+  const newUser: IUser = new User({
     name,
     email,
     password: `${encrypt}|${salt}`,
   });
-  newUser.save((err: any) => {
-    if (err) {
-      console.error(err);
+  newUser.save((userErr: Error) => {
+    if (userErr) {
+      console.error(userErr);
       res.sendStatus(500);
       return;
     }
 
-    res.sendStatus(200);
+    const newFriends: IFriends = new Friends();
+    newFriends.save((friendsErr: Error) => {
+      if (friendsErr) {
+        console.error(friendsErr);
+        res.sendStatus(500);
+        return;
+      }
+
+      res.sendStatus(200);
+    });
   });
 });
 
