@@ -1,17 +1,17 @@
 import { Document, model, Schema } from 'mongoose';
 
 const Friends = new Schema({
-  user: String,
-  friends: [String],
-  applying: [String],
-  waiting: [String],
+  user: Schema.Types.ObjectId,
+  friends: [Schema.Types.ObjectId],
+  applying: [Schema.Types.ObjectId],
+  waiting: [Schema.Types.ObjectId],
 });
 
 export default model('Friends', Friends);
 
 export interface IFriends extends Document {
-  user?: string;
-  friends?: [string];
-  applying?: [string];
-  waiting?: [string];
+  user?: Schema.Types.ObjectId;
+  friends?: [Schema.Types.ObjectId];
+  applying?: [Schema.Types.ObjectId];
+  waiting?: [Schema.Types.ObjectId];
 }
