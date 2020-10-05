@@ -16,6 +16,7 @@ router.post('/', async (req, res) => {
   const nameCheck = await User.findOne({ name });
   if (nameCheck) {
     res.status(409).send('이미 같은 이름이 존재합니다');
+    return;
   }
 
   const emailCheck = await User.findOne({ email });
@@ -38,7 +39,9 @@ router.post('/', async (req, res) => {
       return;
     }
 
-    const newFriends: IFriends = new Friends();
+    const newFriends: IFriends = new Friends({
+      user: newUser._id,
+    });
     newFriends.save((friendsErr: Error) => {
       if (friendsErr) {
         console.error(friendsErr);
