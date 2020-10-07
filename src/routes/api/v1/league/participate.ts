@@ -13,7 +13,7 @@ router.post('/', auth, async (req: IRequest, res) => {
     return;
   }
 
-  const league: ILeague | null = await League.findById(_id);
+  const league: ILeague = await League.findById(_id);
   if (!league) {
     res.sendStatus(404);
     return;

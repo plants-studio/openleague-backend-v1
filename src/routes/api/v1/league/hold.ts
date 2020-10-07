@@ -1,7 +1,7 @@
 import { Router } from 'express';
 
 import auth, { IRequest, IToken } from '../../../../middlewares/auth';
-import League from '../../../../models/League';
+import League, { ILeague } from '../../../../models/League';
 
 const router = Router();
 
@@ -15,7 +15,7 @@ router.post('/', auth, (req: IRequest, res) => {
     return;
   }
 
-  const newLeague = new League({
+  const newLeague: ILeague = new League({
     title,
     content,
     host: verified?.user?.email,
