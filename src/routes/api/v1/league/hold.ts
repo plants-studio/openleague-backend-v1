@@ -8,9 +8,9 @@ const router = Router();
 router.post('/', auth, (req: IRequest, res) => {
   const verified: IToken | undefined = req.token;
   const {
-    title, content, game, max, member, reward,
+    title, content, fee, game, max, member, reward,
   } = req.body;
-  if (!(title && content && game && max && member && reward)) {
+  if (!(title && content && fee && game && max && member && reward)) {
     res.sendStatus(412);
     return;
   }
@@ -18,6 +18,7 @@ router.post('/', auth, (req: IRequest, res) => {
   const newLeague: ILeague = new League({
     title,
     content,
+    fee,
     host: verified?.user?._id,
     game,
     max,

@@ -4,6 +4,7 @@ import mongoosePaginate from 'mongoose-paginate-v2';
 const League = new Schema({
   title: String,
   content: String,
+  fee: Number,
   host: Schema.Types.ObjectId,
   game: String,
   max: Number,
@@ -18,6 +19,7 @@ export default model('League', League);
 export interface ILeague extends Document {
   title?: string;
   content?: string;
+  fee?: number;
   host?: Schema.Types.ObjectId;
   game?: string;
   max?: number;
