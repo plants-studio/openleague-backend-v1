@@ -5,7 +5,7 @@ import League from '../../../../models/League';
 
 const router = Router();
 
-router.post('/', async (req, res) => {
+router.get('/', async (req, res) => {
   const { page: tp, limit: tl } = req.query;
   if (!(tp && tl)) {
     res.sendStatus(412);
