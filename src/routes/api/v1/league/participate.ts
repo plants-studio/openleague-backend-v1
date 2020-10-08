@@ -2,34 +2,46 @@ import { Router } from 'express';
 
 import auth, { IRequest, IToken } from '../../../../middlewares/auth';
 import League, { ILeague } from '../../../../models/League';
+import { ITeam } from '../../../../models/Team';
 
 const router = Router();
 
-router.put('/', auth, async (req: IRequest, res) => {
-  const verified: IToken | undefined = req.token;
-  const { _id } = req.body;
-  if (!_id) {
+router.put('/:id', auth, async (req: IRequest, res) => {
+  const { token }: IToken = req;
+  const { id } = req.params;
+  if (!id) {
     res.sendStatus(412);
     return;
   }
 
-  const league: ILeague = await League.findById(_id);
+  const { team }: { team?: ITeam } = req.body;
+  if (!team) {
+    res.sendStatus(412);
+    return;
+  }
+
+  if (token !== team.leader) {
+    res.sendStatus(403);
+    return;
+  }
+
+  const league: ILeague = await League.findById(id);
   if (!league) {
     res.sendStatus(404);
     return;
   }
 
-  if (league.member?.length === league.max) {
+  if (league.teamMax === league.teams?.length) {
     res.sendStatus(409);
     return;
   }
 
-  if (league.member?.find(verified?.user?._id)) {
+  if (league.teams?.find(team._id)) {
     res.sendStatus(409);
     return;
   }
 
-  league.updateOne({ $push: { member: verified?.user?._id } }, (err) => {
+  league.updateOne({ $push: { teams: team._id } }, (err) => {
     if (err) {
       console.error(err);
       res.sendStatus(500);
