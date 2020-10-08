@@ -5,7 +5,7 @@ import Friends, { IFriends } from '../../../../../models/Friends';
 
 const router = Router();
 
-router.post('/', auth, async (req: IRequest, res) => {
+router.put('/', auth, async (req: IRequest, res) => {
   const verified: IToken | undefined = req.token;
   const { target } = req.body;
   if (!target) {
