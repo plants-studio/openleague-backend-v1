@@ -6,12 +6,16 @@ import League, { ILeague } from '../../../../models/League';
 const router = Router();
 
 router.post('/', auth, (req: IRequest, res) => {
-  const verified: IToken | undefined = req.token;
+  const { token }: IToken = req;
   const {
-    title, content, fee, game, max, member, reward,
-  } = req.body;
-  if (!(title && content && fee && game && max && member && reward)) {
+    title, content, fee, game, teamMin, teamMax, teamReqMemCnt, reward,
+  }: ILeague = req.body;
+  if (!(title && content && fee && game && teamMin && teamMax && teamReqMemCnt && reward)) {
     res.sendStatus(412);
+    return;
+  }
+  if (title.length < 5 || title.length > 20) {
+    res.status(412).send('제목의 길이가 적절하지 않습니다. 5자 이상, 20자 이하로 해주세요.');
     return;
   }
 
@@ -19,10 +23,11 @@ router.post('/', auth, (req: IRequest, res) => {
     title,
     content,
     fee,
-    host: verified?.user?._id,
+    host: token?.user?._id,
     game,
-    max,
-    member,
+    teamMin,
+    teamMax,
+    teamReqMemCnt,
     reward,
   });
   newLeague.save((err: Error) => {
