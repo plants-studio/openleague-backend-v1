@@ -18,7 +18,7 @@ router.post('/', auth, (req: IRequest, res) => {
   const newLeague: ILeague = new League({
     title,
     content,
-    host: verified?.user?.email,
+    host: verified?.user?._id,
     game,
     max,
     member,
