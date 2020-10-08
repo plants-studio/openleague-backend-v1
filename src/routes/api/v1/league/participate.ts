@@ -5,7 +5,7 @@ import League, { ILeague } from '../../../../models/League';
 
 const router = Router();
 
-router.post('/', auth, async (req: IRequest, res) => {
+router.put('/', auth, async (req: IRequest, res) => {
   const verified: IToken | undefined = req.token;
   const { _id } = req.body;
   if (!_id) {
@@ -20,6 +20,11 @@ router.post('/', auth, async (req: IRequest, res) => {
   }
 
   if (league.member?.length === league.max) {
+    res.sendStatus(409);
+    return;
+  }
+
+  if (league.member?.find(verified?.user?._id)) {
     res.sendStatus(409);
     return;
   }
