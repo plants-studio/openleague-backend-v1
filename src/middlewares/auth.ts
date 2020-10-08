@@ -8,7 +8,9 @@ export interface IRequest extends Request {
 }
 
 export interface IToken {
-  user?: IUser;
+  token?: {
+    user?: IUser;
+  };
 }
 
 export default (req: IRequest, res: Response, next: NextFunction) => {

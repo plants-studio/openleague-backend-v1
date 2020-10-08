@@ -7,7 +7,7 @@ import User, { IUser } from '../../../../models/User';
 const router = Router();
 
 router.post('/', async (req, res) => {
-  const { name, email, password } = req.body;
+  const { name, email, password }: IUser = req.body;
   if (!(name && email && password)) {
     res.sendStatus(412);
     return;

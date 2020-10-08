@@ -6,14 +6,14 @@ import Friends, { IFriends } from '../../../../../models/Friends';
 const router = Router();
 
 router.put('/', auth, async (req: IRequest, res) => {
-  const verified: IToken | undefined = req.token;
+  const { token }: IToken = req;
   const { target } = req.body;
   if (!target) {
     res.sendStatus(412);
     return;
   }
 
-  const myFriends: IFriends = await Friends.findById(verified?.user?._id);
+  const myFriends: IFriends = await Friends.findById(token?.user?._id);
   const targetFriends: IFriends = await Friends.findById(target);
   if (!(myFriends && targetFriends)) {
     res.sendStatus(404);
@@ -24,10 +24,10 @@ router.put('/', auth, async (req: IRequest, res) => {
     res.sendStatus(409);
     return;
   }
-  if (targetFriends.applying?.find(verified?.user?._id)) {
+  if (targetFriends.applying?.find(token?.user?._id)) {
     await targetFriends.updateOne({
-      $push: { friends: verified?.user?._id },
-      $pull: { applying: verified?.user?._id },
+      $push: { friends: token?.user?._id },
+      $pull: { applying: token?.user?._id },
     });
     await myFriends.updateOne({
       $push: { friends: target },
@@ -38,7 +38,7 @@ router.put('/', auth, async (req: IRequest, res) => {
   }
 
   await myFriends.updateOne({ $push: { applying: target } });
-  await targetFriends.updateOne({ $push: { waiting: verified?.user?._id } });
+  await targetFriends.updateOne({ $push: { waiting: token?.user?._id } });
   res.status(200).send('친구 신청을 보냈습니다.');
 });
 

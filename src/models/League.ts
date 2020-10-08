@@ -7,8 +7,10 @@ const League = new Schema({
   fee: Number,
   host: Schema.Types.ObjectId,
   game: String,
-  max: Number,
-  member: [Schema.Types.ObjectId],
+  teams: [Schema.Types.ObjectId],
+  teamMin: Number,
+  teamMax: Number,
+  teamReqMemCnt: Number,
   reward: String,
 });
 
@@ -22,7 +24,9 @@ export interface ILeague extends Document {
   fee?: number;
   host?: Schema.Types.ObjectId;
   game?: string;
-  max?: number;
-  member?: [Schema.Types.ObjectId];
+  teams?: [Schema.Types.ObjectId];
+  teamMin?: number;
+  teamMax?: number;
+  teamReqMemCnt?: number;
   reward?: string;
 }

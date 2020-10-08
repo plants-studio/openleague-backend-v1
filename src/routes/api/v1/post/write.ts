@@ -6,8 +6,8 @@ import Post, { IPost } from '../../../../models/Post';
 const router = Router();
 
 router.post('/', auth, async (req: IRequest, res) => {
-  const verified: IToken | undefined = req.token;
-  const { title, content, category } = req.body;
+  const { token }: IToken = req;
+  const { title, content, category }: IPost = req.body;
   if (!(title && content && category)) {
     res.sendStatus(412);
     return;
@@ -16,7 +16,7 @@ router.post('/', auth, async (req: IRequest, res) => {
   const newPost: IPost = new Post({
     title,
     content,
-    writer: verified?.user?._id,
+    writer: token?.user?._id,
     category,
   });
   newPost.save((err: Error) => {
