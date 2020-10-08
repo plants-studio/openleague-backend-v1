@@ -6,7 +6,7 @@ import League, { ILeague } from '../../../../models/League';
 const router = Router();
 
 router.delete('/:id', auth, async (req: IRequest, res) => {
-  const verified: IToken | undefined = req.token;
+  const { token }: IToken = req;
   const { id } = req.params;
   if (!id) {
     res.sendStatus(412);
@@ -19,13 +19,20 @@ router.delete('/:id', auth, async (req: IRequest, res) => {
     return;
   }
 
-  if (league.host !== verified?.user?._id) {
+  if (league.host !== token?.user?._id) {
     res.sendStatus(403);
     return;
   }
 
-  await league.deleteOne();
-  res.sendStatus(200);
+  league.deleteOne((err: Error) => {
+    if (err) {
+      console.error(err);
+      res.sendStatus(500);
+      return;
+    }
+
+    res.sendStatus(200);
+  });
 });
 
 export default router;

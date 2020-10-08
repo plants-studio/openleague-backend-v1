@@ -6,7 +6,7 @@ import Post, { IPost } from '../../../../models/Post';
 const router = Router();
 
 router.delete('/:id', auth, async (req: IRequest, res) => {
-  const verified: IToken | undefined = req.token;
+  const { token }: IToken = req;
   const { id } = req.params;
   if (!id) {
     res.sendStatus(412);
@@ -19,13 +19,20 @@ router.delete('/:id', auth, async (req: IRequest, res) => {
     return;
   }
 
-  if (post.writer !== verified?.user?._id) {
+  if (post.writer !== token?.user?._id) {
     res.sendStatus(403);
     return;
   }
 
-  await post.deleteOne();
-  res.sendStatus(200);
+  post.deleteOne((err: Error) => {
+    if (err) {
+      console.error(err);
+      res.sendStatus(500);
+      return;
+    }
+
+    res.sendStatus(200);
+  });
 });
 
 export default router;
