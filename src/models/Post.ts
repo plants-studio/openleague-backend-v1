@@ -1,4 +1,5 @@
 import { Document, model, Schema } from 'mongoose';
+import mongoosePaginate from 'mongoose-paginate-v2';
 
 const Post = new Schema({
   title: String,
@@ -7,6 +8,8 @@ const Post = new Schema({
   category: String,
   timestamp: { type: Date, default: Date.now() },
 });
+
+Post.plugin(mongoosePaginate);
 
 export default model('Post', Post);
 
