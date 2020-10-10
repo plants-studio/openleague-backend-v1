@@ -13,10 +13,19 @@ router.post('/', async (req, res) => {
     return;
   }
 
-  const nameCheck = await User.findOne({ name });
-  if (nameCheck) {
-    res.status(409).send('이미 같은 이름이 존재합니다');
+  if (name.search('#') !== -1) {
+    res.status(409).send('닉네임에는 #이 포함될 수 없습니다.');
     return;
+  }
+
+  let tag;
+  let nameCheck = true;
+  let nameTag;
+  while (nameCheck) {
+    const ran = (Math.floor(Math.random() * 99999) + 1).toString();
+    tag = `${new Array(6 - ran.length).join('0')}${ran}`;
+    nameTag = `${name}#${tag}`;
+    nameCheck = await User.findOne({ name: nameTag });
   }
 
   const emailCheck = await User.findOne({ email });
@@ -28,7 +37,7 @@ router.post('/', async (req, res) => {
   const salt = randomBytes(16).toString('base64');
   const encrypt = pbkdf2Sync(password, salt, 100000, 64, 'SHA512').toString('base64');
   const newUser: IUser = new User({
-    name,
+    name: nameTag,
     email,
     password: `${encrypt}|${salt}`,
   });
