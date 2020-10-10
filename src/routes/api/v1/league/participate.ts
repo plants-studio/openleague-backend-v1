@@ -2,21 +2,28 @@ import { Router } from 'express';
 
 import auth, { IRequest, IToken } from '../../../../middlewares/auth';
 import League, { ILeague } from '../../../../models/League';
-import { ITeam } from '../../../../models/Team';
+import Team, { ITeam } from '../../../../models/Team';
 
 const router = Router();
 
 router.put('/:id', auth, async (req: IRequest, res) => {
   const { token }: IToken = req;
   const { id } = req.params;
-  if (!id) {
+  const { teamId } = req.body;
+  if (!(id && teamId)) {
     res.sendStatus(412);
     return;
   }
 
-  const { team }: { team?: ITeam } = req.body;
+  const team: ITeam = await Team.findById(teamId);
   if (!team) {
-    res.sendStatus(412);
+    res.status(404).send('팀이 존재하지 않습니다.');
+    return;
+  }
+
+  const league: ILeague = await League.findById(id);
+  if (!league) {
+    res.status(404).send('리그가 존재하지 않습니다.');
     return;
   }
 
@@ -25,19 +32,13 @@ router.put('/:id', auth, async (req: IRequest, res) => {
     return;
   }
 
-  const league: ILeague = await League.findById(id);
-  if (!league) {
-    res.sendStatus(404);
-    return;
-  }
-
   if (league.teamMax === league.teams?.length) {
-    res.sendStatus(409);
+    res.status(409).send('리그에 참여할 자리가 없습니다.');
     return;
   }
 
   if (league.teams?.find(team._id)) {
-    res.sendStatus(409);
+    res.status(409).send('이미 리그에 참여 중입니다.');
     return;
   }
 
