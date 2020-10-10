@@ -18,8 +18,8 @@ router.post('/', async (req, res) => {
     return;
   }
 
-  let nameCheck = true;
   let nameTag;
+  let nameCheck = true;
   while (nameCheck) {
     const tag = (Math.floor(Math.random() * 89999) + 10000).toString();
     nameTag = `${name}#${tag}`;
