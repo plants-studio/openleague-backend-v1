@@ -1,13 +1,13 @@
 import { Router } from 'express';
 
 import auth, { IRequest, IToken } from '../../../../../middlewares/auth';
-import Friends, { IFriends } from '../../../../../models/Friends';
+import Friend, { IFriend } from '../../../../../models/Friend';
 
 const router = Router();
 
 router.get('/', auth, async (req: IRequest, res) => {
   const { token }: IToken = req;
-  const list: IFriends = await Friends.findOne({ user: token?.user?._id });
+  const list: IFriend = await Friend.findOne({ user: token?.user?._id });
   if (!list) {
     res.sendStatus(404);
     return;

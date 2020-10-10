@@ -1,15 +1,15 @@
 import { Document, model, Schema } from 'mongoose';
 
-const Friends = new Schema({
+const Friend = new Schema({
   user: Schema.Types.ObjectId,
   friends: [Schema.Types.ObjectId],
   applying: [Schema.Types.ObjectId],
   waiting: [Schema.Types.ObjectId],
 });
 
-export default model('Friends', Friends);
+export default model('Friend', Friend);
 
-export interface IFriends extends Document {
+export interface IFriend extends Document {
   user?: Schema.Types.ObjectId;
   friends?: [Schema.Types.ObjectId];
   applying?: [Schema.Types.ObjectId];

@@ -1,7 +1,7 @@
 import { Router } from 'express';
 
 import auth, { IRequest, IToken } from '../../../../../middlewares/auth';
-import Friends, { IFriends } from '../../../../../models/Friends';
+import Friend, { IFriend } from '../../../../../models/Friend';
 
 const router = Router();
 
@@ -13,13 +13,13 @@ router.delete('/:id', auth, async (req: IRequest, res) => {
     return;
   }
 
-  const friends: IFriends = await Friends.findOne({ user: token?.user?._id });
-  if (!friends) {
+  const friend: IFriend = await Friend.findOne({ user: token?.user?._id });
+  if (!friend) {
     res.sendStatus(404);
     return;
   }
 
-  friends.updateOne({ $pull: { friends: { id } } }, (err: Error) => {
+  friend.updateOne({ $pull: { friends: { id } } }, (err: Error) => {
     if (err) {
       console.error(err);
       res.sendStatus(500);

@@ -1,7 +1,7 @@
 import { pbkdf2Sync, randomBytes } from 'crypto';
 import { Router } from 'express';
 
-import Friends, { IFriends } from '../../../../models/Friends';
+import Friend, { IFriend } from '../../../../models/Friend';
 import User, { IUser } from '../../../../models/User';
 
 const router = Router();
@@ -39,12 +39,12 @@ router.post('/', async (req, res) => {
       return;
     }
 
-    const newFriends: IFriends = new Friends({
+    const newFriend: IFriend = new Friend({
       user: newUser._id,
     });
-    newFriends.save((friendsErr: Error) => {
-      if (friendsErr) {
-        console.error(friendsErr);
+    newFriend.save((friendErr: Error) => {
+      if (friendErr) {
+        console.error(friendErr);
         res.sendStatus(500);
         return;
       }

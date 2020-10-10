@@ -1,7 +1,7 @@
 import { Router } from 'express';
 
 import auth, { IRequest, IToken } from '../../../../../middlewares/auth';
-import Friends, { IFriends } from '../../../../../models/Friends';
+import Friend, { IFriend } from '../../../../../models/Friend';
 
 const router = Router();
 
@@ -13,23 +13,23 @@ router.put('/', auth, async (req: IRequest, res) => {
     return;
   }
 
-  const myFriends: IFriends = await Friends.findById(token?.user?._id);
-  const targetFriends: IFriends = await Friends.findById(target);
-  if (!(myFriends && targetFriends)) {
+  const myFriend: IFriend = await Friend.findById(token?.user?._id);
+  const targetFriend: IFriend = await Friend.findById(target);
+  if (!(myFriend && targetFriend)) {
     res.sendStatus(404);
     return;
   }
 
-  if (myFriends.applying?.find(target)) {
+  if (myFriend.applying?.find(target)) {
     res.sendStatus(409);
     return;
   }
-  if (targetFriends.applying?.find(token?.user?._id)) {
-    await targetFriends.updateOne({
+  if (targetFriend.applying?.find(token?.user?._id)) {
+    await targetFriend.updateOne({
       $push: { friends: token?.user?._id },
       $pull: { applying: token?.user?._id },
     });
-    await myFriends.updateOne({
+    await myFriend.updateOne({
       $push: { friends: target },
       $pull: { waiting: target },
     });
@@ -37,8 +37,8 @@ router.put('/', auth, async (req: IRequest, res) => {
     return;
   }
 
-  await myFriends.updateOne({ $push: { applying: target } });
-  await targetFriends.updateOne({ $push: { waiting: token?.user?._id } });
+  await myFriend.updateOne({ $push: { applying: target } });
+  await targetFriend.updateOne({ $push: { waiting: token?.user?._id } });
   res.status(200).send('친구 신청을 보냈습니다.');
 });
 

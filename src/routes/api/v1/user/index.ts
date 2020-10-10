@@ -1,9 +1,9 @@
 import { Router } from 'express';
 
-import friends from './friends';
+import friend from './friend';
 
 const router = Router();
 
-router.use('/friends', friends);
+router.use('/friend', friend);
 
 export default router;
