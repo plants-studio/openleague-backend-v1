@@ -4,6 +4,7 @@ const User = new Schema({
   name: String,
   email: String,
   password: String,
+  admin: { type: Boolean, default: false },
 });
 
 export default model('User', User);
@@ -12,4 +13,5 @@ export interface IUser extends Document {
   name?: string;
   email?: string;
   password?: string;
+  admin?: boolean;
 }
