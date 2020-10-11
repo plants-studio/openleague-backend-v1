@@ -28,7 +28,7 @@ router.post('/', async (req, res) => {
 
   const emailCheck = await User.findOne({ email });
   if (emailCheck) {
-    res.status(409).send('이미 같은 이메일이 존재합니다');
+    res.status(409).send('이미 같은 이메일이 존재합니다.');
     return;
   }
 

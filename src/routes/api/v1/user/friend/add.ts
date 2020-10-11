@@ -16,14 +16,14 @@ router.put('/:name', auth, async (req: IRequest, res) => {
 
   const target: IUser = await User.findOne({ name });
   if (!target) {
-    res.status(404).send('유저를 찾을 수 없습니다');
+    res.status(404).send('유저를 찾을 수 없습니다.');
     return;
   }
 
   const myFriend: IFriend = await Friend.findOne({ user: token?.user?._id });
   const targetFriend: IFriend = await Friend.findOne({ user: target._id });
   if (!(myFriend && targetFriend)) {
-    res.status(404).send('친구 데이터를 찾을 수 없습니다');
+    res.status(404).send('친구 데이터를 찾을 수 없습니다.');
     return;
   }
 
