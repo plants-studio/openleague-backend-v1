@@ -22,6 +22,10 @@ app.use('/', router);
 app.use('/api-docs', swagger.serve);
 app.get('/api-docs', swagger.setup(document));
 
+app.get('/callback', (_req, res) => {
+  res.sendStatus(200);
+});
+
 config();
 
 connect(

@@ -5,6 +5,7 @@ const User = new Schema(
     name: String,
     email: String,
     password: String,
+    discord: String,
     admin: { type: Boolean, default: false },
   },
   {
@@ -18,5 +19,6 @@ export interface IUser extends Document {
   name?: string;
   email?: string;
   password?: string;
+  discord?: string;
   admin?: boolean;
 }
