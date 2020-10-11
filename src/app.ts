@@ -1,5 +1,5 @@
 import cookieParser from 'cookie-parser';
-import cors from 'cors';
+// import cors from 'cors';
 import { config } from 'dotenv-safe';
 import express, { json, urlencoded } from 'express';
 import { connect } from 'mongoose';
@@ -12,7 +12,7 @@ import router from './routes/index';
 const app = express();
 
 app.use(cookieParser());
-app.use(cors());
+// app.use(cors());
 app.use(json());
 app.use(urlencoded({ extended: false }));
 app.use(morgan('dev'));
