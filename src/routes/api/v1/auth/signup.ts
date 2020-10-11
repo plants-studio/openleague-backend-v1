@@ -21,7 +21,7 @@ router.post('/', async (req, res) => {
   let nameTag;
   let nameCheck = true;
   while (nameCheck) {
-    const tag = (Math.floor(Math.random() * 89999) + 10000).toString();
+    const tag = (Math.floor(Math.random() * 90000) + 10000).toString();
     nameTag = `${name}#${tag}`;
     nameCheck = await User.findOne({ name: nameTag });
   }
