@@ -1,11 +1,9 @@
-import { Router } from 'express';
+import { Request, Response } from 'express';
 
-import games from '../../../../docs/games.json';
-import Post from '../../../../models/Post';
+import games from '../../docs/games.json';
+import Post from '../../models/Post';
 
-const router = Router();
-
-router.get('/', async (req, res) => {
+export default async (req: Request, res: Response) => {
   const { page: tp, limit: tl } = req.query;
   if (!(tp && tl)) {
     res.sendStatus(412);
@@ -25,6 +23,4 @@ router.get('/', async (req, res) => {
     }),
   );
   res.status(200).send(list);
-});
-
-export default router;
+};

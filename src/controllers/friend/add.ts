@@ -1,12 +1,10 @@
-import { Router } from 'express';
+import { Response } from 'express';
 
-import auth, { IRequest, IToken } from '../../../../../middlewares/auth';
-import Friend, { IFriend } from '../../../../../models/Friend';
-import User, { IUser } from '../../../../../models/User';
+import { IRequest, IToken } from '../../middlewares/auth';
+import Friend, { IFriend } from '../../models/Friend';
+import User, { IUser } from '../../models/User';
 
-const router = Router();
-
-router.put('/:name', auth, async (req: IRequest, res) => {
+export default async (req: IRequest, res: Response) => {
   const { token }: IToken = req;
   const { name } = req.params;
   if (!name) {
@@ -47,6 +45,4 @@ router.put('/:name', auth, async (req: IRequest, res) => {
   await myFriend.updateOne({ $push: { applying: target._id } });
   await targetFriend.updateOne({ $push: { waiting: token?.user?._id } });
   res.status(200).send('친구 신청을 보냈습니다.');
-});
-
-export default router;
+};

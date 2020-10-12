@@ -1,11 +1,9 @@
-import { Router } from 'express';
+import { Response } from 'express';
 
-import auth, { IRequest, IToken } from '../../../../middlewares/auth';
-import Post, { IPost } from '../../../../models/Post';
+import { IRequest, IToken } from '../../middlewares/auth';
+import Post, { IPost } from '../../models/Post';
 
-const router = Router();
-
-router.delete('/:id', auth, async (req: IRequest, res) => {
+export default async (req: IRequest, res: Response) => {
   const { token }: IToken = req;
   const { id } = req.params;
   if (!id) {
@@ -33,6 +31,4 @@ router.delete('/:id', auth, async (req: IRequest, res) => {
 
     res.sendStatus(200);
   });
-});
-
-export default router;
+};
