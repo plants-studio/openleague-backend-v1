@@ -6,11 +6,12 @@ import User, { IUser } from '../../models/User';
 
 export default async (req: IRequest, res: Response) => {
   const { token }: IToken = req;
-  const { name } = req.params;
+  let { name } = req.params;
   if (!name) {
     res.sendStatus(412);
     return;
   }
+  name = name.replace('|', '#');
 
   const target: IUser = await User.findOne({ name });
   if (!target) {
