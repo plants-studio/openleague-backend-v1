@@ -21,6 +21,10 @@ export default async (req: IRequest, res: Response, next: NextFunction) => {
       const token = req.headers.authorization.substring(7);
       if (token.split('.').length === 3) {
         const verified = JSON.parse(JSON.stringify(verify(token, process.env.ACCESS_KEY!)));
+        if (!verified) {
+          res.sendStatus(401);
+          return;
+        }
         const whitelist = await Whitelist.findOne({ token });
         if (!whitelist) {
           res.sendStatus(401);
