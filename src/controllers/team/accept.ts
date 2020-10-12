@@ -1,12 +1,10 @@
-import { Router } from 'express';
+import { Response } from 'express';
 
-import auth, { IRequest, IToken } from '../../../../middlewares/auth';
-import Team, { ITeam } from '../../../../models/Team';
-import User, { IUser } from '../../../../models/User';
+import { IRequest, IToken } from '../../middlewares/auth';
+import Team, { ITeam } from '../../models/Team';
+import User, { IUser } from '../../models/User';
 
-const router = Router();
-
-router.put('/:id', auth, async (req: IRequest, res) => {
+export default async (req: IRequest, res: Response) => {
   const { token }: IToken = req;
   const { id } = req.params;
   const { userId } = req.body;
@@ -44,6 +42,4 @@ router.put('/:id', auth, async (req: IRequest, res) => {
   await team.updateOne({ $push: { member: user._id } });
   await team.updateOne({ $pull: { waiting: user._id } });
   res.sendStatus(200);
-});
-
-export default router;
+};

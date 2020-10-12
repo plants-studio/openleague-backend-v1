@@ -1,11 +1,9 @@
-import { Router } from 'express';
+import { Response } from 'express';
 
-import auth, { IRequest, IToken } from '../../../../middlewares/auth';
-import League, { ILeague } from '../../../../models/League';
+import { IRequest, IToken } from '../../middlewares/auth';
+import League, { ILeague } from '../../models/League';
 
-const router = Router();
-
-router.post('/', auth, (req: IRequest, res) => {
+export default (req: IRequest, res: Response) => {
   const { token }: IToken = req;
   const {
     title, content, fee, game, teamMin, teamMax, teamReqMemCnt, reward,
@@ -39,6 +37,4 @@ router.post('/', auth, (req: IRequest, res) => {
 
     res.sendStatus(200);
   });
-});
-
-export default router;
+};

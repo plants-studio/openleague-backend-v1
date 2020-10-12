@@ -1,11 +1,9 @@
-import { Router } from 'express';
+import { Response } from 'express';
 
-import auth, { IRequest, IToken } from '../../../../middlewares/auth';
-import Team, { ITeam } from '../../../../models/Team';
+import { IRequest, IToken } from '../../middlewares/auth';
+import Team, { ITeam } from '../../models/Team';
 
-const router = Router();
-
-router.post('/', auth, (req: IRequest, res) => {
+export default (req: IRequest, res: Response) => {
   const { token }: IToken = req;
   const { name, introduce, isPublic }: ITeam = req.body;
   if (!(name && introduce && isPublic)) {
@@ -28,6 +26,4 @@ router.post('/', auth, (req: IRequest, res) => {
 
     res.sendStatus(200);
   });
-});
-
-export default router;
+};

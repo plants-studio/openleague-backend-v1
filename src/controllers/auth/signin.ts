@@ -1,14 +1,12 @@
 import { pbkdf2Sync } from 'crypto';
 import DiscordOauth2 from 'discord-oauth2';
-import { Router } from 'express';
+import { Request, Response } from 'express';
 import { sign } from 'jsonwebtoken';
 
-import User, { IUser } from '../../../../models/User';
-import Whitelist, { IWhitelist } from '../../../../models/Whitelist';
+import User, { IUser } from '../../models/User';
+import Whitelist, { IWhitelist } from '../../models/Whitelist';
 
-const router = Router();
-
-router.post('/', async (req, res) => {
+export default async (req: Request, res: Response) => {
   const { discord } = req.body;
   const { email, password }: IUser = req.body;
 
@@ -96,6 +94,4 @@ router.post('/', async (req, res) => {
   } else {
     res.sendStatus(412);
   }
-});
-
-export default router;
+};

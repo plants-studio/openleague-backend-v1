@@ -1,12 +1,10 @@
 import { pbkdf2Sync, randomBytes } from 'crypto';
-import { Router } from 'express';
+import { Request, Response } from 'express';
 
-import Friend, { IFriend } from '../../../../models/Friend';
-import User, { IUser } from '../../../../models/User';
+import Friend, { IFriend } from '../../models/Friend';
+import User, { IUser } from '../../models/User';
 
-const router = Router();
-
-router.post('/', async (req, res) => {
+export default async (req: Request, res: Response) => {
   const { name, email, password }: IUser = req.body;
   if (!(name && email && password)) {
     res.sendStatus(412);
@@ -59,6 +57,4 @@ router.post('/', async (req, res) => {
       res.sendStatus(200);
     });
   });
-});
-
-export default router;
+};

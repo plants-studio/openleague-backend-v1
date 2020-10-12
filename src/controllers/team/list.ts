@@ -1,10 +1,8 @@
-import { Router } from 'express';
+import { Request, Response } from 'express';
 
-import Team from '../../../../models/Team';
+import Team from '../../models/Team';
 
-const router = Router();
-
-router.get('/', async (req, res) => {
+export default async (req: Request, res: Response) => {
   const { page: tp, limit: tl } = req.query;
   if (!(tp && tl)) {
     res.sendStatus(412);
@@ -14,6 +12,4 @@ router.get('/', async (req, res) => {
   const limit = Number.parseInt(tl!.toString(), 10);
   const list = await Team.paginate({ isPublic: true }, { page, limit });
   res.status(200).send(list);
-});
-
-export default router;
+};

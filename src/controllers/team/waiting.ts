@@ -1,11 +1,9 @@
-import { Router } from 'express';
+import { Response } from 'express';
 
-import auth, { IRequest, IToken } from '../../../../middlewares/auth';
-import Team, { ITeam } from '../../../../models/Team';
+import { IRequest, IToken } from '../../middlewares/auth';
+import Team, { ITeam } from '../../models/Team';
 
-const router = Router();
-
-router.get('/:id', auth, async (req: IRequest, res) => {
+export default async (req: IRequest, res: Response) => {
   const { token }: IToken = req;
   const { id } = req.params;
   if (!id) {
@@ -24,6 +22,4 @@ router.get('/:id', auth, async (req: IRequest, res) => {
   }
 
   res.status(200).send(team.waiting);
-});
-
-export default router;
+};

@@ -1,11 +1,9 @@
 import DiscordOAuth2 from 'discord-oauth2';
-import { Router } from 'express';
+import { Request, Response } from 'express';
 
-import Whitelist from '../../../../models/Whitelist';
+import Whitelist from '../../models/Whitelist';
 
-const router = Router();
-
-router.post('/', (req, res) => {
+export default (req: Request, res: Response) => {
   if (req.headers.authorization?.startsWith('Bearer ')) {
     const token = req.headers.authorization.substring(7);
     if (token.split('.').length === 3) {
@@ -29,6 +27,4 @@ router.post('/', (req, res) => {
   } else {
     res.sendStatus(401);
   }
-});
-
-export default router;
+};

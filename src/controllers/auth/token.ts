@@ -1,13 +1,11 @@
 import DiscordOAuth2 from 'discord-oauth2';
-import { Router } from 'express';
+import { Response } from 'express';
 import { sign, verify } from 'jsonwebtoken';
 
-import { IRequest } from '../../../../middlewares/auth';
-import Whitelist, { IWhitelist } from '../../../../models/Whitelist';
+import { IRequest } from '../../middlewares/auth';
+import Whitelist, { IWhitelist } from '../../models/Whitelist';
 
-const router = Router();
-
-router.post('/', async (req: IRequest, res) => {
+export default async (req: IRequest, res: Response) => {
   try {
     if (req.headers.authorization?.startsWith('Bearer ')) {
       const refreshToken = req.headers.authorization.substring(7);
@@ -67,6 +65,4 @@ router.post('/', async (req: IRequest, res) => {
   } catch {
     res.sendStatus(401);
   }
-});
-
-export default router;
+};
