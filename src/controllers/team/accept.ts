@@ -29,12 +29,12 @@ export default async (req: IRequest, res: Response) => {
     return;
   }
 
-  if (team.member?.find((data) => data === user._id)) {
+  if (team.member?.find((data) => data.toString() === user._id.toString())) {
     res.status(409).send('유저가 이미 팀에 속해있습니다.');
     return;
   }
 
-  if (!team.waiting?.find((data) => data === user._id)) {
+  if (!team.waiting?.find((data) => data.toString() === user._id.toString())) {
     res.status(409).send('유저가 가입 신청을 넣지 않았습니다.');
     return;
   }

@@ -35,7 +35,7 @@ export default async (req: IRequest, res: Response) => {
     return;
   }
 
-  if (league.teams?.find((data) => data === team._id)) {
+  if (league.teams?.find((data) => data.toString() === team._id.toString())) {
     res.status(409).send('이미 리그에 참여 중입니다.');
     return;
   }
