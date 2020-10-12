@@ -7,7 +7,7 @@ import auth from '../../../middlewares/auth';
 
 const router = Router();
 
-router.get('/', list);
+router.get('/', auth, list);
 router.put('/:name', auth, add);
 router.delete('/:id', auth, remove);
 
