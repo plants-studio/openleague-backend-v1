@@ -17,7 +17,7 @@ export default async (req: IRequest, res: Response) => {
     return;
   }
 
-  if (team.member?.find(token?.user?._id) || team.leader !== token?.user?._id) {
+  if (team.member?.find((data) => data === token?.user?._id) || team.leader !== token?.user?._id) {
     res.sendStatus(403);
   }
 

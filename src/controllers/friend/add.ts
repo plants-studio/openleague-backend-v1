@@ -26,11 +26,13 @@ export default async (req: IRequest, res: Response) => {
     return;
   }
 
-  if (myFriend.applying?.find(target._id as any)) {
+  console.log(myFriend.applying);
+
+  if (myFriend.applying?.find((data) => data === target._id)) {
     res.sendStatus(409);
     return;
   }
-  if (targetFriend.applying?.find(token?.user?._id)) {
+  if (targetFriend.applying?.find((data) => data === token?.user?._id)) {
     await targetFriend.updateOne({
       $push: { friends: token?.user?._id },
       $pull: { applying: token?.user?._id },
