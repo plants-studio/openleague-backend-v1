@@ -3,7 +3,7 @@ import { Response } from 'express';
 import { IRequest, IToken } from '../../middlewares/auth';
 import Team, { ITeam } from '../../models/Team';
 
-export default (req: IRequest, res: Response) => {
+export default async (req: IRequest, res: Response) => {
   const { token }: IToken = req;
   const { name, introduce, isPublic }: ITeam = req.body;
   if (!(name && introduce && isPublic)) {
@@ -11,19 +11,13 @@ export default (req: IRequest, res: Response) => {
     return;
   }
 
-  const newTeam = new Team({
+  const newTeam: ITeam = new Team({
     name,
     introduce,
     leader: token?.user?._id,
     isPublic,
   });
-  newTeam.save((err: Error) => {
-    if (err) {
-      console.error(err);
-      res.sendStatus(500);
-      return;
-    }
 
-    res.sendStatus(200);
-  });
+  await newTeam.save();
+  res.sendStatus(200);
 };

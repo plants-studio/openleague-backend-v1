@@ -26,19 +26,9 @@ export default async (req: Request, res: Response) => {
         discord: user.id,
       });
 
-      newUser.save((err: Error) => {
-        if (err) {
-          console.error(err);
-          res.sendStatus(500);
-          return;
-        }
-
-        res.sendStatus(200);
-      });
-      return;
+      await newUser.save();
+      res.sendStatus(200);
     }
-
-    res.sendStatus(200);
   } else if (email && password) {
     const user: IUser = await User.findOne({ email });
     if (!user) {
@@ -74,23 +64,9 @@ export default async (req: Request, res: Response) => {
       token: refreshToken,
     });
 
-    whiteAccess.save((accessErr: Error) => {
-      if (accessErr) {
-        console.error(accessErr);
-        res.sendStatus(500);
-        return;
-      }
-
-      whiteRefresh.save((refreshErr: Error) => {
-        if (refreshErr) {
-          console.error(refreshErr);
-          res.sendStatus(500);
-          return;
-        }
-
-        res.status(200).send(token);
-      });
-    });
+    await whiteAccess.save();
+    await whiteRefresh.save();
+    res.status(200).send(token);
   } else {
     res.sendStatus(412);
   }

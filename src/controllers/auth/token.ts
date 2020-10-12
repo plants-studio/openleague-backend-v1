@@ -36,28 +36,14 @@ export default async (req: IRequest, res: Response) => {
         const whiteRefresh: IWhitelist = new Whitelist({
           token: newRefreshToken,
         });
+        const token = {
+          accessToken,
+          refreshToken: newRefreshToken,
+        };
 
-        whiteAccess.save((accessErr: Error) => {
-          if (accessErr) {
-            console.error(accessErr);
-            res.sendStatus(500);
-            return;
-          }
-
-          whiteRefresh.save((refreshErr: Error) => {
-            if (refreshErr) {
-              console.error(refreshErr);
-              res.sendStatus(500);
-              return;
-            }
-
-            const token = {
-              accessToken,
-              refreshToken: newRefreshToken,
-            };
-            res.status(200).send({ token });
-          });
-        });
+        await whiteAccess.save();
+        await whiteRefresh.save();
+        res.status(200).send(token);
       }
     } else {
       res.sendStatus(401);

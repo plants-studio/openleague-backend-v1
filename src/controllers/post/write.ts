@@ -17,13 +17,7 @@ export default async (req: IRequest, res: Response) => {
     writer: token?.user?._id,
     category,
   });
-  newPost.save((err: Error) => {
-    if (err) {
-      console.error(err);
-      res.sendStatus(500);
-      return;
-    }
 
-    res.sendStatus(200);
-  });
+  await newPost.save();
+  res.sendStatus(200);
 };

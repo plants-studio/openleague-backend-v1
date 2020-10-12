@@ -22,13 +22,6 @@ export default async (req: IRequest, res: Response) => {
     return;
   }
 
-  team.deleteOne((err) => {
-    if (err) {
-      console.error(err);
-      res.sendStatus(500);
-      return;
-    }
-
-    res.sendStatus(200);
-  });
+  await team.deleteOne();
+  res.sendStatus(200);
 };

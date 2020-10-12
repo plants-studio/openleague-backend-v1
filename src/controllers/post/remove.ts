@@ -22,13 +22,6 @@ export default async (req: IRequest, res: Response) => {
     return;
   }
 
-  post.deleteOne((err: Error) => {
-    if (err) {
-      console.error(err);
-      res.sendStatus(500);
-      return;
-    }
-
-    res.sendStatus(200);
-  });
+  await post.deleteOne();
+  res.sendStatus(200);
 };

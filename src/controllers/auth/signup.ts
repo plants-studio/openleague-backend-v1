@@ -37,24 +37,11 @@ export default async (req: Request, res: Response) => {
     email,
     password: `${encrypt}|${salt}`,
   });
-  newUser.save((userErr: Error) => {
-    if (userErr) {
-      console.error(userErr);
-      res.sendStatus(500);
-      return;
-    }
-
-    const newFriend: IFriend = new Friend({
-      user: newUser._id,
-    });
-    newFriend.save((friendErr: Error) => {
-      if (friendErr) {
-        console.error(friendErr);
-        res.sendStatus(500);
-        return;
-      }
-
-      res.sendStatus(200);
-    });
+  const newFriend: IFriend = new Friend({
+    user: newUser._id,
   });
+
+  await newUser.save();
+  await newFriend.save();
+  res.sendStatus(200);
 };

@@ -17,13 +17,6 @@ export default async (req: IRequest, res: Response) => {
     return;
   }
 
-  team.updateOne({ $push: { waiting: token?.user?._id } }, (err: Error) => {
-    if (err) {
-      console.error(err);
-      res.sendStatus(500);
-      return;
-    }
-
-    res.sendStatus(200);
-  });
+  await team.updateOne({ $push: { waiting: token?.user?._id } });
+  res.sendStatus(200);
 };

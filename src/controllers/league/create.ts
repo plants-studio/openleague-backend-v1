@@ -3,7 +3,7 @@ import { Response } from 'express';
 import { IRequest, IToken } from '../../middlewares/auth';
 import League, { ILeague } from '../../models/League';
 
-export default (req: IRequest, res: Response) => {
+export default async (req: IRequest, res: Response) => {
   const { token }: IToken = req;
   const {
     title, content, fee, game, teamMin, teamMax, teamReqMemCnt, reward,
@@ -28,13 +28,7 @@ export default (req: IRequest, res: Response) => {
     teamReqMemCnt,
     reward,
   });
-  newLeague.save((err: Error) => {
-    if (err) {
-      console.error(err);
-      res.sendStatus(500);
-      return;
-    }
 
-    res.sendStatus(200);
-  });
+  await newLeague.save();
+  res.sendStatus(200);
 };

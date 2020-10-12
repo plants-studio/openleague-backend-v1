@@ -17,13 +17,6 @@ export default async (req: IRequest, res: Response) => {
     return;
   }
 
-  friend.updateOne({ $pull: { friends: { id } } }, (err: Error) => {
-    if (err) {
-      console.error(err);
-      res.sendStatus(500);
-      return;
-    }
-
-    res.sendStatus(200);
-  });
+  await friend.updateOne({ $pull: { friends: { id } } });
+  res.sendStatus(200);
 };
