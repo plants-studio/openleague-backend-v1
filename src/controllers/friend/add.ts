@@ -27,7 +27,11 @@ export default async (req: IRequest, res: Response) => {
   }
 
   if (myFriend.applying?.find((data) => data.toString() === target._id.toString())) {
-    res.sendStatus(409);
+    res.status(409).send('이미 친구 신청을 보냈습니다.');
+    return;
+  }
+  if (myFriend.friends?.find((data) => data.toString() === target._id.toString())) {
+    res.status(409).send('이미 친구입니다.');
     return;
   }
   if (myFriend.waiting?.find((data) => data.toString() === target._id.toString())) {
