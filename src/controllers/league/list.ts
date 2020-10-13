@@ -15,11 +15,10 @@ export default async (req: Request, res: Response) => {
   if (!filter) {
     filter = games;
   }
-  const list: Array<any> = [];
-  await Promise.all(
+  const list = await Promise.all(
     filter.map(async (game) => {
       const result = await League.paginate({ game }, { page, limit });
-      list.push(result.docs);
+      return result.docs;
     }),
   );
   res.status(200).send(list);
