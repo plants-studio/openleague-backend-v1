@@ -30,7 +30,6 @@ export default async (req: Request, res: Response) => {
       const data = {
         email: user.email,
         name: newUser.name,
-        discord: user.id,
       };
       res.status(200).send(data);
     }
