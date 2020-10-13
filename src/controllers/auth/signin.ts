@@ -18,21 +18,24 @@ export default async (req: Request, res: Response) => {
       return;
     }
 
+    const nameTag = `${user.username}#${user.discriminator}`;
+
+    const data = {
+      email: user.email,
+      name: nameTag,
+    };
+
     const userData = await User.findOne({ discord: user.id });
     if (!userData) {
       const newUser: IUser = new User({
         email: user.email,
-        name: `${user.username}#${user.discriminator}`,
+        name: nameTag,
         discord: user.id,
       });
 
       await newUser.save();
-      const data = {
-        email: user.email,
-        name: newUser.name,
-      };
-      res.status(200).send(data);
     }
+    res.status(200).send(data);
   } else if (email && password) {
     const user: IUser = await User.findOne({ email });
     if (!user) {
