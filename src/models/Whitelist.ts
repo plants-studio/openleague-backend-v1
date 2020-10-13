@@ -1,9 +1,14 @@
 import { Document, model, Schema } from 'mongoose';
 
-const Whitelist = new Schema({
-  token: String,
-  timestamp: { type: Date, default: Date.now() },
-});
+const Whitelist = new Schema(
+  {
+    token: String,
+    timestamp: { type: Date, default: Date.now() },
+  },
+  {
+    versionKey: false,
+  },
+);
 
 export default model('Whitelist', Whitelist);
 
