@@ -8,7 +8,7 @@ import auth from '../../../middlewares/auth';
 const router = Router();
 
 router.get('/', list);
-router.post('/', auth, write);
 router.delete('/:id', auth, remove);
+router.post('/', auth, write);
 
 export default router;

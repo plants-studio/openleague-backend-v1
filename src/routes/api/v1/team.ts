@@ -10,11 +10,11 @@ import auth from '../../../middlewares/auth';
 
 const router = Router();
 
-router.get('/', list);
-router.get('/waiting/:id', auth, waiting);
-router.post('/', create);
 router.put('/accept/:id', auth, accept);
+router.post('/', create);
 router.put('/:id', auth, join);
+router.get('/', list);
 router.delete('/:id', auth, remove);
+router.get('/waiting/:id', auth, waiting);
 
 export default router;
