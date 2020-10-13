@@ -6,7 +6,7 @@ import User, { IUser } from '../../models/User';
 
 export default async (req: IRequest, res: Response) => {
   const { token }: IToken = req;
-  const friendList: IFriend = await Friend.findOne({ user: token?.user?._id });
+  const friendList: IFriend = await Friend.findById(token?.user?.friend);
   if (!friendList) {
     res.sendStatus(404);
     return;
