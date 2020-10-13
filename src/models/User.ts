@@ -6,6 +6,7 @@ const User = new Schema(
     email: String,
     password: String,
     discord: String,
+    friend: Schema.Types.ObjectId,
     admin: { type: Boolean, default: false },
   },
   {
@@ -20,5 +21,6 @@ export interface IUser extends Document {
   email?: string;
   password?: string;
   discord?: string;
+  friend?: Schema.Types.ObjectId;
   admin?: boolean;
 }

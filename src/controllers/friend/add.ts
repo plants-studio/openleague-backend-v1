@@ -19,12 +19,19 @@ export default async (req: IRequest, res: Response) => {
     return;
   }
 
-  const myFriend: IFriend = await Friend.findOne({ user: token?.user?._id });
-  const targetFriend: IFriend = await Friend.findOne({ user: target._id });
+  const myFriend: IFriend = await Friend.findById(token?.user?.friend);
+  const targetFriend: IFriend = await Friend.findById(target.friend);
   if (!(myFriend && targetFriend)) {
     res.status(404).send('친구 데이터를 찾을 수 없습니다.');
     return;
   }
+
+  // const myFriend: IFriend = await Friend.findOne({ user: token?.user?._id });
+  // const targetFriend: IFriend = await Friend.findOne({ user: target._id });
+  // if (!(myFriend && targetFriend)) {
+  //   res.status(404).send('친구 데이터를 찾을 수 없습니다.');
+  //   return;
+  // }
 
   if (myFriend.applying?.find((data) => data.toString() === target._id.toString())) {
     res.status(409).send('이미 친구 신청을 보냈습니다.');

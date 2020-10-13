@@ -3,6 +3,7 @@ import DiscordOauth2 from 'discord-oauth2';
 import { Request, Response } from 'express';
 import { sign } from 'jsonwebtoken';
 
+import Friend, { IFriend } from '../../models/Friend';
 import User, { IUser } from '../../models/User';
 import Whitelist, { IWhitelist } from '../../models/Whitelist';
 
@@ -18,6 +19,12 @@ export default async (req: Request, res: Response) => {
       return;
     }
 
+    const emailCheck = await User.findOne({ email: user.email });
+    if (emailCheck) {
+      res.status(409).send('이미 같은 이메일이 존재합니다.');
+      return;
+    }
+
     const nameTag = `${user.username}#${user.discriminator}`;
 
     const data = {
@@ -27,13 +34,16 @@ export default async (req: Request, res: Response) => {
 
     const userData = await User.findOne({ discord: user.id });
     if (!userData) {
+      const newFriend: IFriend = new Friend();
       const newUser: IUser = new User({
         email: user.email,
         name: nameTag,
         discord: user.id,
+        friend: newFriend._id,
       });
 
       await newUser.save();
+      await newFriend.save();
     }
     res.status(200).send(data);
   } else if (email && password) {

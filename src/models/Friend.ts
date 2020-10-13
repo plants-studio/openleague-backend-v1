@@ -1,8 +1,8 @@
 import { Document, model, Schema } from 'mongoose';
 
+// TODO Friend 안에 User가 아닌 User 안에 Friend가 되도록 수정
 const Friend = new Schema(
   {
-    user: Schema.Types.ObjectId,
     friends: [Schema.Types.ObjectId],
     applying: [Schema.Types.ObjectId],
     waiting: [Schema.Types.ObjectId],
@@ -15,7 +15,6 @@ const Friend = new Schema(
 export default model('Friend', Friend);
 
 export interface IFriend extends Document {
-  user?: Schema.Types.ObjectId;
   friends?: [Schema.Types.ObjectId];
   applying?: [Schema.Types.ObjectId];
   waiting?: [Schema.Types.ObjectId];

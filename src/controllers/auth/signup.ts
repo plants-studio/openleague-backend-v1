@@ -32,13 +32,12 @@ export default async (req: Request, res: Response) => {
 
   const salt = randomBytes(16).toString('base64');
   const encrypt = pbkdf2Sync(password, salt, 100000, 64, 'SHA512').toString('base64');
+  const newFriend: IFriend = new Friend();
   const newUser: IUser = new User({
     name: nameTag,
     email,
     password: `${encrypt}|${salt}`,
-  });
-  const newFriend: IFriend = new Friend({
-    user: newUser._id,
+    friend: newFriend._id,
   });
 
   await newUser.save();
