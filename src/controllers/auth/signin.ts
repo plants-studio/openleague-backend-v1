@@ -27,7 +27,12 @@ export default async (req: Request, res: Response) => {
       });
 
       await newUser.save();
-      res.sendStatus(200);
+      const data = {
+        email: user.email,
+        name: newUser.name,
+        discord: user.id,
+      };
+      res.status(200).send(data);
     }
   } else if (email && password) {
     const user: IUser = await User.findOne({ email });
