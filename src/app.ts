@@ -1,12 +1,15 @@
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
+import { CronJob } from 'cron';
 import { config } from 'dotenv-safe';
 import express, { json, urlencoded } from 'express';
+import { verify } from 'jsonwebtoken';
 import { connect } from 'mongoose';
 import morgan from 'morgan';
 import swagger from 'swagger-ui-express';
 
 import document from './docs/swagger.json';
+import Whitelist, { IWhitelist } from './models/Whitelist';
 import router from './routes/index';
 
 const app = express();
@@ -27,6 +30,24 @@ app.get('/callback', (_req, res) => {
 });
 
 config();
+
+const job = new CronJob('0 0 * * 0', async () => {
+  const whitelist: Array<IWhitelist> = await Whitelist.find();
+  whitelist.forEach(async (data, i) => {
+    try {
+      verify(data.token, process.env.ACCESS_KEY!);
+      try {
+        verify(data.token, process.env.REFRESH_KEY!);
+      } catch {
+        whitelist[i].deleteOne();
+      }
+    } catch {
+      whitelist[i].deleteOne();
+    }
+  });
+});
+
+job.start();
 
 connect(
   process.env.DB_URI!,
