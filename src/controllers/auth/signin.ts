@@ -19,12 +19,6 @@ export default async (req: Request, res: Response) => {
       return;
     }
 
-    const emailCheck = await User.findOne({ email: user.email });
-    if (emailCheck) {
-      res.status(409).send('이미 같은 이메일이 존재합니다.');
-      return;
-    }
-
     const nameTag = `${user.username}#${user.discriminator}`;
 
     const data = {
@@ -41,6 +35,12 @@ export default async (req: Request, res: Response) => {
         discord: user.id,
         friend: newFriend._id,
       });
+
+      const emailCheck = await User.findOne({ email: user.email });
+      if (emailCheck) {
+        res.status(409).send('이미 같은 이메일이 존재합니다.');
+        return;
+      }
 
       await newUser.save();
       await newFriend.save();
