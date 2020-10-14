@@ -11,7 +11,7 @@ export default async (req: IRequest, res: Response) => {
     return;
   }
 
-  const friend: IFriend = await Friend.findOne({ user: token?.user?._id });
+  const friend: IFriend = await Friend.findById(token?.user?.friend);
   if (!friend) {
     res.sendStatus(404);
     return;
