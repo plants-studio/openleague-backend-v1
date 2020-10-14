@@ -2,6 +2,7 @@ import { Response } from 'express';
 
 import { IRequest, IToken } from '../../middlewares/auth';
 import Friend, { IFriend } from '../../models/Friend';
+import User, { IUser } from '../../models/User';
 
 export default async (req: IRequest, res: Response) => {
   const { token }: IToken = req;
@@ -10,13 +11,16 @@ export default async (req: IRequest, res: Response) => {
     res.sendStatus(412);
     return;
   }
+  const target: IUser = await User.findById(id);
 
-  const friend: IFriend = await Friend.findById(token?.user?.friend);
-  if (!friend) {
+  const myFriend: IFriend = await Friend.findById(token?.user?.friend);
+  const targetFriend: IFriend = await Friend.findById(target.friend);
+  if (!(myFriend && targetFriend)) {
     res.sendStatus(404);
     return;
   }
 
-  await friend.updateOne({ $pull: { friends: id } });
+  await myFriend.updateOne({ $pull: { friends: id } });
+  await target.updateOne({ $pull: { friends: token?.user?._id } });
   res.sendStatus(200);
 };
