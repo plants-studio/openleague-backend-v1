@@ -22,6 +22,6 @@ export default async (req: IRequest, res: Response) => {
   }
 
   await myFriend.updateOne({ $pull: { friends: id } });
-  await target.updateOne({ $pull: { friends: token?.user?._id } });
+  await targetFriend.updateOne({ $pull: { friends: token?.user?._id } });
   res.sendStatus(200);
 };
