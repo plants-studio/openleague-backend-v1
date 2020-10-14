@@ -17,6 +17,6 @@ export default async (req: IRequest, res: Response) => {
     return;
   }
 
-  await friend.updateOne({ $pull: { friends: { id } } });
+  await friend.updateOne({ $pull: { friends: id } });
   res.sendStatus(200);
 };
