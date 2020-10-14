@@ -11,6 +11,7 @@ export default async (req: IRequest, res: Response) => {
     res.sendStatus(412);
     return;
   }
+
   const target: IUser = await User.findById(id);
 
   const myFriend: IFriend = await Friend.findById(token?.user?.friend);
