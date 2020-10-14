@@ -26,9 +26,9 @@ export default async (req: IRequest, res: Response) => {
           res.sendStatus(401);
           return;
         }
-        const user = JSON.parse(JSON.stringify(verify(refreshToken, process.env.REFRESH_KEY!)));
-        const accessToken = sign({ user }, process.env.ACCESS_KEY!);
-        const newRefreshToken = sign({ user }, process.env.REFRESH_KEY!);
+        const verified = JSON.parse(JSON.stringify(verify(refreshToken, process.env.REFRESH_KEY!)));
+        const accessToken = sign({ user: verified.user }, process.env.ACCESS_KEY!);
+        const newRefreshToken = sign({ user: verified.user }, process.env.REFRESH_KEY!);
 
         const whiteAccess: IWhitelist = new Whitelist({
           token: accessToken,
