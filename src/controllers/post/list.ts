@@ -1,7 +1,8 @@
 import { Request, Response } from 'express';
+import { PaginateResult } from 'mongoose';
 
 import games from '../../docs/games.json';
-import Post from '../../models/Post';
+import Post, { IPost } from '../../models/Post';
 
 export default async (req: Request, res: Response) => {
   const { page: tp, limit: tl } = req.query;
@@ -17,8 +18,15 @@ export default async (req: Request, res: Response) => {
   }
   const list = await Promise.all(
     filter.map(async (category) => {
-      const result = await Post.paginate({ category }, { page, limit });
-      return result.docs;
+      const result1: PaginateResult<IPost> = await Post.paginate({ category }, { page, limit });
+      const result2 = await Promise.all(
+        result1.docs.map((data) => {
+          const temp = data;
+          temp.content = undefined;
+          return temp;
+        }),
+      );
+      return result2;
     }),
   );
   res.status(200).send(list);
