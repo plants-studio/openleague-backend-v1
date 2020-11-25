@@ -1,13 +1,13 @@
 import { Document, model, Schema } from 'mongoose';
 import mongoosePaginate from 'mongoose-paginate-v2';
 
-// TODO 유저 - 친구 관계처럼 글 - 댓글 관계 생성
 const Post = new Schema(
   {
     title: String,
     content: String,
     writer: Schema.Types.ObjectId,
     category: String,
+    comment: [Schema.Types.ObjectId],
     timestamp: { type: Date, default: Date.now() },
   },
   {
