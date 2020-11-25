@@ -1,90 +1,53 @@
 import { pbkdf2Sync } from 'crypto';
-import DiscordOauth2 from 'discord-oauth2';
 import { Request, Response } from 'express';
 import { sign } from 'jsonwebtoken';
 
-import Friend, { IFriend } from '../../models/Friend';
 import User, { IUser } from '../../models/User';
 import Whitelist, { IWhitelist } from '../../models/Whitelist';
 
 export default async (req: Request, res: Response) => {
-  const { discord } = req.body;
   const { email, password }: IUser = req.body;
 
-  if (discord) {
-    const oauth = new DiscordOauth2();
-    const user = await oauth.getUser(discord);
-    if (!user.verified) {
-      res.sendStatus(401);
-      return;
-    }
-
-    const nameTag = `${user.username}#${user.discriminator}`;
-
-    const data = {
-      email: user.email,
-      name: nameTag,
-    };
-
-    const userData = await User.findOne({ discord: user.id });
-    if (!userData) {
-      const newFriend: IFriend = new Friend();
-      const newUser: IUser = new User({
-        email: user.email,
-        name: nameTag,
-        discord: user.id,
-        friend: newFriend._id,
-      });
-
-      const emailCheck = await User.findOne({ email: user.email });
-      if (emailCheck) {
-        res.status(409).send('이미 같은 이메일이 존재합니다.');
-        return;
-      }
-
-      await newUser.save();
-      await newFriend.save();
-    }
-    res.status(200).send(data);
-  } else if (email && password) {
-    const user: IUser = await User.findOne({ email });
-    if (!user) {
-      res.sendStatus(404);
-      return;
-    }
-
-    const temp = user.password?.split('|');
-    if (!temp) {
-      res.sendStatus(500);
-      return;
-    }
-
-    const encrypt = pbkdf2Sync(password, temp[1], 100000, 64, 'SHA512').toString('base64');
-    if (encrypt !== temp[0]) {
-      res.sendStatus(401);
-      return;
-    }
-
-    user.password = undefined;
-
-    const accessToken = sign({ user }, process.env.ACCESS_KEY!, { expiresIn: '7h' });
-    const refreshToken = sign({ user }, process.env.REFRESH_KEY!, { expiresIn: '7d' });
-    const token = {
-      accessToken,
-      refreshToken,
-    };
-
-    const whiteAccess: IWhitelist = new Whitelist({
-      token: accessToken,
-    });
-    const whiteRefresh: IWhitelist = new Whitelist({
-      token: refreshToken,
-    });
-
-    await whiteAccess.save();
-    await whiteRefresh.save();
-    res.status(200).send(token);
-  } else {
+  if (!(email && password)) {
     res.sendStatus(412);
+    return;
   }
+
+  const user: IUser = await User.findOne({ email });
+  if (!user) {
+    res.sendStatus(404);
+    return;
+  }
+
+  const temp = user.password?.split('|');
+  if (!temp) {
+    res.sendStatus(500);
+    return;
+  }
+
+  const encrypt = pbkdf2Sync(password, temp[1], 100000, 64, 'SHA512').toString('base64');
+  if (encrypt !== temp[0]) {
+    res.sendStatus(401);
+    return;
+  }
+
+  user.password = undefined;
+
+  const accessToken = sign({ user }, process.env.ACCESS_KEY!, { expiresIn: '7h' });
+  const refreshToken = sign({ user }, process.env.REFRESH_KEY!, { expiresIn: '7d' });
+  const token = {
+    accessToken,
+    refreshToken,
+  };
+
+  const whiteAccess: IWhitelist = new Whitelist({
+    token: accessToken,
+  });
+  const whiteRefresh: IWhitelist = new Whitelist({
+    token: refreshToken,
+  });
+
+  await whiteAccess.save();
+  await whiteRefresh.save();
+  res.status(200).send(token);
 };
