@@ -21,10 +21,7 @@ app.use(urlencoded({ extended: false }));
 app.use(morgan('dev'));
 
 app.use('/', router);
-
-app.use('/api-docs', swagger.serve);
-app.get('/api-docs', swagger.setup(document));
-
+app.use('/api-docs', swagger.serve, swagger.setup(document));
 app.get('/callback', (_req, res) => {
   res.sendStatus(200);
 });
