@@ -6,7 +6,7 @@ import join from '../../../controllers/team/join';
 import list from '../../../controllers/team/list';
 import remove from '../../../controllers/team/remove';
 import waiting from '../../../controllers/team/waiting';
-import auth from '../../../middlewares/auth';
+import auth from '../../../middleware/auth';
 
 const router = Router();
 

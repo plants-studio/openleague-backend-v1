@@ -1,6 +1,6 @@
 import { Response } from 'express';
 
-import { IRequest, IToken } from '../../middlewares/auth';
+import { IRequest, IToken } from '../../middleware/auth';
 import Team, { ITeam } from '../../models/Team';
 
 export default async (req: IRequest, res: Response) => {

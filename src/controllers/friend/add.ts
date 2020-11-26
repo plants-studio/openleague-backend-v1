@@ -1,6 +1,6 @@
 import { Response } from 'express';
 
-import { IRequest, IToken } from '../../middlewares/auth';
+import { IRequest, IToken } from '../../middleware/auth';
 import Friend, { IFriend } from '../../models/Friend';
 import User, { IUser } from '../../models/User';
 

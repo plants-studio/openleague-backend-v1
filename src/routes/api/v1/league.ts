@@ -4,7 +4,7 @@ import create from '../../../controllers/league/create';
 import list from '../../../controllers/league/list';
 import participate from '../../../controllers/league/participate';
 import remove from '../../../controllers/league/remove';
-import auth from '../../../middlewares/auth';
+import auth from '../../../middleware/auth';
 
 const router = Router();
 

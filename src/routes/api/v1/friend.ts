@@ -3,7 +3,7 @@ import { Router } from 'express';
 import add from '../../../controllers/friend/add';
 import list from '../../../controllers/friend/list';
 import remove from '../../../controllers/friend/remove';
-import auth from '../../../middlewares/auth';
+import auth from '../../../middleware/auth';
 
 const router = Router();
 

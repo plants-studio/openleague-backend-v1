@@ -2,7 +2,7 @@ import DiscordOAuth2 from 'discord-oauth2';
 import { Response } from 'express';
 import { sign, verify } from 'jsonwebtoken';
 
-import { IRequest } from '../../middlewares/auth';
+import { IRequest } from '../../middleware/auth';
 import Whitelist, { IWhitelist } from '../../models/Whitelist';
 
 export default async (req: IRequest, res: Response) => {
