@@ -21,6 +21,10 @@
     {
       "name": "friend",
       "description": "Friend manage methods"
+    },
+    {
+      "name": "league",
+      "description": "League manage methods"
     }
   ],
   "paths": {
@@ -341,6 +345,216 @@
         "responses": {
           "200": {
             "description": "Success"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "412": {
+            "description": "Precondition Failed"
+          }
+        }
+      }
+    },
+    "/league": {
+      "post": {
+        "tags": ["league"],
+        "summary": "Create a new league",
+        "description": "Create a new league by receiving title, content, fee, game category, minimum number of teams, Maximum number of teams, number of members required for the team, reward",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "description": "League data",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "type": "string"
+                  },
+                  "content": {
+                    "type": "string"
+                  },
+                  "fee": {
+                    "type": "number"
+                  },
+                  "game": {
+                    "type": "string"
+                  },
+                  "teamMin": {
+                    "type": "number"
+                  },
+                  "teamMax": {
+                    "type": "number"
+                  },
+                  "teamReqMemCnt": {
+                    "type": "number"
+                  },
+                  "reward": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "412": {
+            "description": "Precondition Failed"
+          }
+        }
+      },
+      "get": {
+        "tags": ["league"],
+        "summary": "Get the list of leagues",
+        "description": "Gets the list of selected games or the entire league",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "page",
+            "required": true,
+            "schema": {
+              "type": "number"
+            },
+            "description": "Page"
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": true,
+            "schema": {
+              "type": "number"
+            },
+            "description": "Item limit"
+          }
+        ],
+        "requestBody": {
+          "description": "Games you want to bring in a league list",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "game": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/League"
+                  }
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "Precondition Failed"
+          }
+        }
+      }
+    },
+    "/league/{id}": {
+      "put": {
+        "tags": ["league"],
+        "summary": "Apply to the league",
+        "description": "The leader of the team applies to join the league",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "League object id"
+          }
+        ],
+        "requestBody": {
+          "description": "Team object id",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "teamId": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "409": {
+            "description": "Conflict"
+          },
+          "412": {
+            "description": "Precondition Failed"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["league"],
+        "summary": "Delete the League",
+        "description": "Delete a league with the Object ID of the league",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "League object id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "403": {
+            "description": "Forbidden"
           },
           "404": {
             "description": "Not Found"
