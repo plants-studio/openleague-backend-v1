@@ -3,7 +3,10 @@
   "info": {
     "title": "Open League",
     "description": "KDMHS Creative IT Contest submission backend server",
-    "version": "0.0.1"
+    "version": "0.0.1",
+    "contact": {
+      "email": "shimjs8@naver.com"
+    }
   },
   "servers": [
     {
@@ -25,6 +28,10 @@
     {
       "name": "league",
       "description": "League manage methods"
+    },
+    {
+      "name": "post",
+      "description": "Post manage methods"
     }
   ],
   "paths": {
@@ -247,7 +254,7 @@
       "put": {
         "tags": ["friend"],
         "summary": "Send friend request or accept",
-        "description": "To send or accept a friend addition request by name",
+        "description": "To send or accept the friend addition request by name",
         "security": [
           {
             "BearerAuth": []
@@ -283,8 +290,8 @@
     "/friend": {
       "get": {
         "tags": ["friend"],
-        "summary": "Get a list of friends",
-        "description": "Get a list of friends",
+        "summary": "Get the list of friends",
+        "description": "Get the list of friends",
         "security": [
           {
             "BearerAuth": []
@@ -325,7 +332,7 @@
       "delete": {
         "tags": ["friend"],
         "summary": "Delete friend",
-        "description": "Delete a friend from the friend list",
+        "description": "Delete the friend from the friend list",
         "security": [
           {
             "BearerAuth": []
@@ -436,7 +443,7 @@
           }
         ],
         "requestBody": {
-          "description": "Games you want to bring in a league list",
+          "description": "Games you want to bring in the league list",
           "content": {
             "application/json": {
               "schema": {
@@ -531,8 +538,8 @@
       },
       "delete": {
         "tags": ["league"],
-        "summary": "Delete the League",
-        "description": "Delete a league with the Object ID of the league",
+        "summary": "Delete the league",
+        "description": "Delete the league with the Object ID of the league",
         "security": [
           {
             "BearerAuth": []
@@ -547,6 +554,165 @@
               "type": "string"
             },
             "description": "League object id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "412": {
+            "description": "Precondition Failed"
+          }
+        }
+      }
+    },
+    "/post": {
+      "get": {
+        "tags": ["post"],
+        "summary": "Get the list of posts",
+        "description": "Gets the list of postings in the selected category",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "page",
+            "required": true,
+            "schema": {
+              "type": "number"
+            },
+            "description": "Page"
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": true,
+            "schema": {
+              "type": "number"
+            },
+            "description": "Item limit"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/Post"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "Precondition Failed"
+          }
+        }
+      },
+      "post": {
+        "tags": ["post"],
+        "summary": "Write a new post",
+        "description": "Write a new post by receiving title, content, category",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "description": "Post data",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "type": "string"
+                  },
+                  "content": {
+                    "type": "string"
+                  },
+                  "category": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "412": {
+            "description": "Precondition Failed"
+          }
+        }
+      }
+    },
+    "/post/{id}": {
+      "get": {
+        "tags": ["post"],
+        "summary": "Read the post",
+        "description": "Returns the data of the post corresponding to the received object id",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Post object id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Post"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "412": {
+            "description": "Precondition Failed"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["post"],
+        "summary": "Delete the post",
+        "description": "Delete the post with the Object ID of the post",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Post object id"
           }
         ],
         "responses": {
