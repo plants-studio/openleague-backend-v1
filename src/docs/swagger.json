@@ -30,6 +30,10 @@
       "description": "League manage methods"
     },
     {
+      "name": "notification",
+      "description": "Notification methods"
+    },
+    {
       "name": "post",
       "description": "Post manage methods"
     },
@@ -576,6 +580,73 @@
         }
       }
     },
+    "/notification": {
+      "get": {
+        "tags": ["notification"],
+        "summary": "Get the list of notification",
+        "description": "Get the lift of notification",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": "Success"
+        }
+      },
+      "post": {
+        "tags": ["notification"],
+        "summary": "Send notification",
+        "description": "Send notification to specified target",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "description": "Notification data with target and type",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "type": "string"
+                  },
+                  "description": {
+                    "type": "string"
+                  },
+                  "category": {
+                    "type": "string"
+                  },
+                  "target": {
+                    "type": "string"
+                  },
+                  "type": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "412": {
+            "description": "Precondition Failed"
+          }
+        }
+      }
+    },
     "/post": {
       "get": {
         "tags": ["post"],
@@ -1059,6 +1130,20 @@
           }
         }
       },
+      "Notification": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "category": {
+            "type": "string"
+          }
+        }
+      },
       "Post": {
         "type": "object",
         "properties": {
@@ -1131,6 +1216,12 @@
           },
           "friend": {
             "type": "string"
+          },
+          "notification": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
           },
           "admin": {
             "type": "boolean"
