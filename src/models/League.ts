@@ -19,9 +19,13 @@ const League = new Schema(
   },
 );
 
+League.index({ title: 'text', content: 'text' }, { defaultLanguage: 'kr' });
 League.plugin(mongoosePaginate);
 
-export default model('League', League);
+const Model = model('League', League);
+Model.createIndexes();
+
+export default Model;
 
 export interface ILeague extends Document {
   title?: string;

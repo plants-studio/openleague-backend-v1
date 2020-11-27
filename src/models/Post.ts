@@ -15,9 +15,13 @@ const Post = new Schema(
   },
 );
 
+Post.index({ title: 'text', content: 'text' }, { defaultLanguage: 'kr' });
 Post.plugin(mongoosePaginate);
 
-export default model('Post', Post);
+const Model = model('Post', Post);
+Model.createIndexes();
+
+export default Model;
 
 export interface IPost extends Document {
   title?: string;

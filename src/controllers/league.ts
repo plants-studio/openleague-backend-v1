@@ -36,7 +36,7 @@ export const create = async (req: IRequest, res: Response) => {
 };
 
 export const list = async (req: Request, res: Response) => {
-  const { page: tp, limit: tl } = req.query;
+  const { page: tp, limit: tl, search } = req.query;
   if (!(tp && tl)) {
     res.sendStatus(412);
     return;
@@ -49,6 +49,13 @@ export const list = async (req: Request, res: Response) => {
   }
   const result = await Promise.all(
     filter.map(async (game) => {
+      if (search) {
+        const pagination = await League.paginate(
+          { game, $text: { $search: search as string } },
+          { page, limit },
+        );
+        return pagination.docs;
+      }
       const pagination = await League.paginate({ game }, { page, limit });
       return pagination.docs;
     }),

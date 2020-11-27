@@ -14,9 +14,13 @@ const Team = new Schema(
   },
 );
 
+Team.index({ name: 'text' }, { defaultLanguage: 'kr' });
 Team.plugin(mongoosePaginate);
 
-export default model('Team', Team);
+const Model = model('Team', Team);
+Model.createIndexes();
+
+export default Model;
 
 export interface ITeam extends Document {
   name?: string;

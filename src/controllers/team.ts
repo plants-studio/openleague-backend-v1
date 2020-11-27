@@ -23,14 +23,20 @@ export const join = async (req: IRequest, res: Response) => {
 };
 
 export const list = async (req: Request, res: Response) => {
-  const { page: tp, limit: tl } = req.query;
+  const { page: tp, limit: tl, search } = req.query;
   if (!(tp && tl)) {
     res.sendStatus(412);
     return;
   }
   const page = Number.parseInt(tp!.toString(), 10);
   const limit = Number.parseInt(tl!.toString(), 10);
-  const result = await Team.paginate({ isPublic: true }, { page, limit });
+  if (search) {
+    const result = await Team.paginate({}, { page, limit });
+    res.status(200).send(result);
+    return;
+  }
+
+  const result = await Team.paginate({ $text: { $search: search as string } }, { page, limit });
   res.status(200).send(result);
 };
 
