@@ -258,43 +258,6 @@
         }
       }
     },
-    "/friend/{name}": {
-      "put": {
-        "tags": ["friend"],
-        "summary": "Send friend request or accept",
-        "description": "To send or accept the friend addition request by name",
-        "security": [
-          {
-            "BearerAuth": []
-          }
-        ],
-        "parameters": [
-          {
-            "in": "path",
-            "name": "name",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "description": "User name"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Success"
-          },
-          "404": {
-            "description": "Not Found"
-          },
-          "409": {
-            "description": "Conflict"
-          },
-          "412": {
-            "description": "Precondition Failed"
-          }
-        }
-      }
-    },
     "/friend": {
       "get": {
         "tags": ["friend"],
@@ -332,6 +295,43 @@
           },
           "404": {
             "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/friend/{name}": {
+      "put": {
+        "tags": ["friend"],
+        "summary": "Send friend request or accept",
+        "description": "To send or accept the friend addition request by name",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "name",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "User name"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "409": {
+            "description": "Conflict"
+          },
+          "412": {
+            "description": "Precondition Failed"
           }
         }
       }
