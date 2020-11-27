@@ -32,6 +32,10 @@
     {
       "name": "post",
       "description": "Post manage methods"
+    },
+    {
+      "name": "team",
+      "description": "Team manage methods"
     }
   ],
   "paths": {
@@ -421,7 +425,7 @@
       "get": {
         "tags": ["league"],
         "summary": "Get the list of leagues",
-        "description": "Gets the list of selected games or the entire league",
+        "description": "Get the list of selected games or the entire league",
         "parameters": [
           {
             "in": "query",
@@ -576,7 +580,7 @@
       "get": {
         "tags": ["post"],
         "summary": "Get the list of posts",
-        "description": "Gets the list of postings in the selected category",
+        "description": "Get the list of postings in the selected category",
         "parameters": [
           {
             "in": "query",
@@ -713,6 +717,247 @@
               "type": "string"
             },
             "description": "Post object id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "412": {
+            "description": "Precondition Failed"
+          }
+        }
+      }
+    },
+    "/team/accept/{id}": {
+      "put": {
+        "tags": ["team"],
+        "summary": "Accept the application for membership",
+        "description": "Accept the team's object id and user's object id to accept the application",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Team object id"
+          }
+        ],
+        "requestBody": {
+          "description": "User object id",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "userId": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "409": {
+            "description": "Conflict"
+          },
+          "412": {
+            "description": "Precondition Failed"
+          }
+        }
+      }
+    },
+    "/team": {
+      "post": {
+        "tags": ["team"],
+        "summary": "Create a new team",
+        "description": "Create a new team by receiving team name, introduce, whether the team is open to the public",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "description": "Team data",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "introduce": {
+                    "type": "string"
+                  },
+                  "isPublic": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "412": {
+            "description": "Precondition Failed"
+          }
+        }
+      },
+      "get": {
+        "tags": ["team"],
+        "summary": "Get the list of teams",
+        "description": "Get the list of teams",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "page",
+            "required": true,
+            "schema": {
+              "type": "number"
+            },
+            "description": "Page"
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": true,
+            "schema": {
+              "type": "number"
+            },
+            "description": "Item limit"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Team"
+                  }
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "Precondition Failed"
+          }
+        }
+      }
+    },
+    "/team/{id}": {
+      "put": {
+        "tags": ["team"],
+        "summary": "Enrollment to team",
+        "description": "Enrollment to team by receiving team's object id",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "content": {
+              "type": "string"
+            },
+            "description": "Team object id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "412": {
+            "description": "Precondition Failed"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["team"],
+        "summary": "Delete the team",
+        "description": "Delete the team by receiving team's object id",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "content": {
+              "type": "string"
+            },
+            "description": "Team object id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "412": {
+            "description": "Precondition Failed"
+          }
+        }
+      }
+    },
+    "/team/waiting/{id}": {
+      "get": {
+        "tags": ["team"],
+        "summary": "Get the list of people who have signed up for the team",
+        "description": "Get the list of people who have signed up for the team",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "BearerAuth": []
           }
         ],
         "responses": {
