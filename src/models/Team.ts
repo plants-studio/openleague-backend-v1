@@ -7,7 +7,6 @@ const Team = new Schema(
     introduce: String,
     leader: Schema.Types.ObjectId,
     member: [Schema.Types.ObjectId],
-    isPublic: Boolean,
     waiting: [Schema.Types.ObjectId],
   },
   {
@@ -24,6 +23,5 @@ export interface ITeam extends Document {
   introduce?: string;
   leader?: Schema.Types.ObjectId;
   member?: Schema.Types.ObjectId[];
-  isPublic?: boolean;
   waiting?: Schema.Types.ObjectId[];
 }

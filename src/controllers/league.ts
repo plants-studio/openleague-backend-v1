@@ -59,41 +59,46 @@ export const list = async (req: Request, res: Response) => {
 export const participate = async (req: IRequest, res: Response) => {
   const { token }: IToken = req;
   const { id } = req.params;
-  const { teamId } = req.body;
-  if (!(id && teamId)) {
+  const { name, introduce } = req.body;
+  if (!(id && name && introduce)) {
     res.sendStatus(412);
-    return;
-  }
-
-  const team: ITeam = await Team.findById(teamId);
-  if (!team) {
-    res.status(404).send('팀이 존재하지 않습니다.');
     return;
   }
 
   const league: ILeague = await League.findById(id);
   if (!league) {
-    res.status(404).send('리그가 존재하지 않습니다.');
+    res.sendStatus(404);
+    return;
+  }
+  if (league.teams?.length === league.teamMax) {
+    res.status(409).send('리그가 꽉 찼습니다');
     return;
   }
 
-  if (token !== team.leader) {
-    res.sendStatus(403);
+  let err = false;
+  league.teams?.forEach(async (teamId) => {
+    const team: ITeam = await Team.findById(teamId);
+    team.member?.forEach(async (userId) => {
+      if (userId === token?.user?._id) {
+        err = true;
+      }
+    });
+    if (team.leader === token?.user?._id) {
+      err = true;
+    }
+  });
+  if (err) {
+    res.status(409).send('이미 해당 리그에 참여 중입니다');
     return;
   }
 
-  if (league.teamMax === league.teams?.length) {
-    res.status(409).send('리그에 참여할 자리가 없습니다.');
-    return;
-  }
-
-  if (league.teams?.find((data) => data.toString() === team._id.toString())) {
-    res.status(409).send('이미 리그에 참여 중입니다.');
-    return;
-  }
-
+  const team: ITeam = new Team({
+    name,
+    introduce,
+    leader: token?.user?._id,
+  });
+  await team.save();
   await league.updateOne({ $push: { teams: team._id } });
-  res.sendStatus(200);
 };
 
 export const remove = async (req: IRequest, res: Response) => {
