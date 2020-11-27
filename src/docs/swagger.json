@@ -51,7 +51,7 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "discord": {
+                  "token": {
                     "type": "string"
                   }
                 }
@@ -87,6 +87,46 @@
           },
           "412": {
             "description": "Precondition Failed"
+          }
+        }
+      }
+    },
+    "/auth/refresh": {
+      "post": {
+        "tags": ["auth"],
+        "summary": "Refresh accessToken and refreshToken using refreshToken",
+        "description": "Deactivate the received refreshToken and refresh a new accessToken and refreshToken",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "token": {
+                      "type": "object",
+                      "properties": {
+                        "accessToken": {
+                          "type": "string"
+                        },
+                        "refreshToken": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
           }
         }
       }
@@ -210,46 +250,6 @@
           },
           "412": {
             "description": "Precondition Failed"
-          }
-        }
-      }
-    },
-    "/auth/token": {
-      "post": {
-        "tags": ["auth"],
-        "summary": "Refresh accessToken and refreshToken using refreshToken",
-        "description": "Deactivate the received refreshToken and refresh a new accessToken and refreshToken",
-        "security": [
-          {
-            "BearerAuth": []
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Success",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "token": {
-                      "type": "object",
-                      "properties": {
-                        "accessToken": {
-                          "type": "string"
-                        },
-                        "refreshToken": {
-                          "type": "string"
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized"
           }
         }
       }

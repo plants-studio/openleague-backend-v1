@@ -1,11 +1,8 @@
 import { Router } from 'express';
 
-import accept from '../../../controllers/team/accept';
-import create from '../../../controllers/team/create';
-import join from '../../../controllers/team/join';
-import list from '../../../controllers/team/list';
-import remove from '../../../controllers/team/remove';
-import waiting from '../../../controllers/team/waiting';
+import {
+  accept, create, join, list, remove, waiting,
+} from '../../../controllers/team';
 import auth from '../../../middleware/auth';
 
 const router = Router();

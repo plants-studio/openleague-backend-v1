@@ -1,10 +1,10 @@
 import { Response } from 'express';
 
-import { IRequest, IToken } from '../../middleware/auth';
-import Friend, { IFriend } from '../../models/Friend';
-import User, { IUser } from '../../models/User';
+import { IRequest, IToken } from '../middleware/auth';
+import Friend, { IFriend } from '../models/Friend';
+import User, { IUser } from '../models/User';
 
-export default async (req: IRequest, res: Response) => {
+export const add = async (req: IRequest, res: Response) => {
   const { token }: IToken = req;
   let { name } = req.params;
   if (!name) {
@@ -50,4 +50,47 @@ export default async (req: IRequest, res: Response) => {
   await myFriend.updateOne({ $push: { applying: target._id } });
   await targetFriend.updateOne({ $push: { waiting: token?.user?._id } });
   res.status(200).send('친구 신청을 보냈습니다.');
+};
+
+export const list = async (req: IRequest, res: Response) => {
+  const { token }: IToken = req;
+  const friendList: IFriend = await Friend.findById(token?.user?.friend);
+  if (!friendList) {
+    res.sendStatus(404);
+    return;
+  }
+
+  const result = await Promise.all(
+    friendList.friends!.map(async (id) => {
+      const user: IUser = await User.findById(id);
+      user.admin = undefined;
+      user.password = undefined;
+      user.discord = undefined;
+      return user;
+    }),
+  );
+
+  res.status(200).send(result);
+};
+
+export const remove = async (req: IRequest, res: Response) => {
+  const { token }: IToken = req;
+  const { id } = req.params;
+  if (!id) {
+    res.sendStatus(412);
+    return;
+  }
+
+  const target: IUser = await User.findById(id);
+
+  const myFriend: IFriend = await Friend.findById(token?.user?.friend);
+  const targetFriend: IFriend = await Friend.findById(target.friend);
+  if (!(myFriend && targetFriend)) {
+    res.sendStatus(404);
+    return;
+  }
+
+  await myFriend.updateOne({ $pull: { friends: id } });
+  await targetFriend.updateOne({ $pull: { friends: token?.user?._id } });
+  res.sendStatus(200);
 };

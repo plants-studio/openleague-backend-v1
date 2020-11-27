@@ -1,17 +1,15 @@
 import { Router } from 'express';
 
-import discord from '../../../controllers/auth/discord';
-import revoke from '../../../controllers/auth/revoke';
-import signin from '../../../controllers/auth/signin';
-import signup from '../../../controllers/auth/signup';
-import token from '../../../controllers/auth/token';
+import {
+  discord, refresh, revoke, signin, signup,
+} from '../../../controllers/auth';
 
 const router = Router();
 
 router.post('/discord', discord);
+router.post('/refresh', refresh);
 router.post('/revoke', revoke);
 router.post('/signin', signin);
 router.post('/signup', signup);
-router.post('/token', token);
 
 export default router;

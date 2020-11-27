@@ -1,9 +1,8 @@
 import { Router } from 'express';
 
-import list from '../../../controllers/post/list';
-import read from '../../../controllers/post/read';
-import remove from '../../../controllers/post/remove';
-import write from '../../../controllers/post/write';
+import {
+  list, read, remove, write,
+} from '../../../controllers/post';
 import auth from '../../../middleware/auth';
 
 const router = Router();
