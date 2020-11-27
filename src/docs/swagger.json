@@ -31,7 +31,7 @@
     },
     {
       "name": "notification",
-      "description": "Notification methods"
+      "description": "Notification manage methods"
     },
     {
       "name": "post",
@@ -339,8 +339,8 @@
     "/friend/{id}": {
       "delete": {
         "tags": ["friend"],
-        "summary": "Delete friend",
-        "description": "Delete the friend from the friend list",
+        "summary": "Delete friend or deny friend request",
+        "description": "Delete the friend from the friend list or the waiting list",
         "security": [
           {
             "BearerAuth": []
@@ -511,13 +511,16 @@
           }
         ],
         "requestBody": {
-          "description": "Team object id",
+          "description": "Team data",
           "content": {
             "application/json": {
               "schema": {
                 "type": "object",
                 "properties": {
-                  "teamId": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "introduce": {
                     "type": "string"
                   }
                 }
@@ -806,103 +809,7 @@
         }
       }
     },
-    "/team/accept/{id}": {
-      "put": {
-        "tags": ["team"],
-        "summary": "Accept the application for membership",
-        "description": "Accept the team's object id and user's object id to accept the application",
-        "security": [
-          {
-            "BearerAuth": []
-          }
-        ],
-        "parameters": [
-          {
-            "in": "path",
-            "name": "id",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "description": "Team object id"
-          }
-        ],
-        "requestBody": {
-          "description": "User object id",
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "userId": {
-                    "type": "string"
-                  }
-                }
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "Success"
-          },
-          "403": {
-            "description": "Forbidden"
-          },
-          "404": {
-            "description": "Not Found"
-          },
-          "409": {
-            "description": "Conflict"
-          },
-          "412": {
-            "description": "Precondition Failed"
-          }
-        }
-      }
-    },
     "/team": {
-      "post": {
-        "tags": ["team"],
-        "summary": "Create a new team",
-        "description": "Create a new team by receiving team name, introduce, whether the team is open to the public",
-        "security": [
-          {
-            "BearerAuth": []
-          }
-        ],
-        "requestBody": {
-          "description": "Team data",
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "name": {
-                    "type": "string"
-                  },
-                  "introduce": {
-                    "type": "string"
-                  },
-                  "isPublic": {
-                    "type": "string"
-                  }
-                }
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "Success"
-          },
-          "412": {
-            "description": "Precondition Failed"
-          }
-        }
-      },
       "get": {
         "tags": ["team"],
         "summary": "Get the list of teams",
@@ -1009,6 +916,65 @@
           },
           "404": {
             "description": "Not Found"
+          },
+          "412": {
+            "description": "Precondition Failed"
+          }
+        }
+      }
+    },
+    "/team/reply/{id}": {
+      "put": {
+        "tags": ["team"],
+        "summary": "Reply a request to join a team",
+        "description": "Reply a request to join a team",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Team object id"
+          }
+        ],
+        "requestBody": {
+          "description": "User object id",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "userId": {
+                    "type": "string"
+                  },
+                  "select": {
+                    "type": "boolean"
+                  }
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "409": {
+            "description": "Conflict"
           },
           "412": {
             "description": "Precondition Failed"
@@ -1187,9 +1153,6 @@
             "items": {
               "type": "string"
             }
-          },
-          "isPublic": {
-            "type": "boolean"
           },
           "waiting": {
             "type": "array",
