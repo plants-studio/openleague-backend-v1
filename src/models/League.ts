@@ -50,7 +50,7 @@ export interface ILeague extends Document {
     | "PLAYERUNKNOWN'S BATTLEGROUNDS"
     | 'Fortnite'
     | 'ETC';
-  teams?: [Schema.Types.ObjectId];
+  teams?: Schema.Types.ObjectId[];
   teamMin?: number;
   teamMax?: number;
   teamReqMemCnt?: number;

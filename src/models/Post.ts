@@ -24,5 +24,6 @@ export interface IPost extends Document {
   content?: string;
   writer?: Schema.Types.ObjectId;
   category?: 'Free' | 'Humor' | 'Illustration' | 'Recruitment';
+  comment?: Schema.Types.ObjectId[];
   timestamp?: Date;
 }
