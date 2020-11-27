@@ -6,7 +6,7 @@ import { IRequest, IToken } from '../middleware/auth';
 import Post, { IPost } from '../models/Post';
 
 export const list = async (req: Request, res: Response) => {
-  const { page: tp, limit: tl } = req.query;
+  const { page: tp, limit: tl, search } = req.query;
   if (!(tp && tl)) {
     res.sendStatus(412);
     return;
@@ -19,6 +19,21 @@ export const list = async (req: Request, res: Response) => {
   }
   const result = await Promise.all(
     filter.map(async (cate) => {
+      if (search) {
+        const result1: PaginateResult<IPost> = await Post.paginate(
+          { category: cate, $text: { $search: search as string } },
+          { page, limit },
+        );
+        const result2 = await Promise.all(
+          result1.docs.map((data) => {
+            const temp = data;
+            temp.content = undefined;
+            return temp;
+          }),
+        );
+        return result2;
+      }
+
       const result1: PaginateResult<IPost> = await Post.paginate(
         { category: cate },
         { page, limit },

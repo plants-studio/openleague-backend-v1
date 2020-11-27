@@ -7,7 +7,6 @@ const Team = new Schema(
     introduce: String,
     leader: Schema.Types.ObjectId,
     member: [Schema.Types.ObjectId],
-    isPublic: Boolean,
     waiting: [Schema.Types.ObjectId],
   },
   {
@@ -15,15 +14,18 @@ const Team = new Schema(
   },
 );
 
+Team.index({ name: 'text' }, { defaultLanguage: 'kr' });
 Team.plugin(mongoosePaginate);
 
-export default model('Team', Team);
+const Model = model('Team', Team);
+Model.createIndexes();
+
+export default Model;
 
 export interface ITeam extends Document {
   name?: string;
   introduce?: string;
   leader?: Schema.Types.ObjectId;
   member?: Schema.Types.ObjectId[];
-  isPublic?: boolean;
   waiting?: Schema.Types.ObjectId[];
 }

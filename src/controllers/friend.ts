@@ -90,6 +90,12 @@ export const remove = async (req: IRequest, res: Response) => {
     return;
   }
 
+  await myFriend.updateOne({
+    $pull: { waiting: target._id },
+  });
+  await targetFriend.updateOne({
+    $pull: { applying: token?.user?._id },
+  });
   await myFriend.updateOne({ $pull: { friends: id } });
   await targetFriend.updateOne({ $pull: { friends: token?.user?._id } });
   res.sendStatus(200);

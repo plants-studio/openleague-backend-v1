@@ -4,7 +4,7 @@ import { CronJob } from 'cron';
 import { config } from 'dotenv-safe';
 import express, { json, urlencoded } from 'express';
 import { verify } from 'jsonwebtoken';
-import { connect } from 'mongoose';
+import { connect, set } from 'mongoose';
 import morgan from 'morgan';
 import swagger from 'swagger-ui-express';
 
@@ -46,6 +46,7 @@ const job = new CronJob('0 0 * * 0', async () => {
 
 job.start();
 
+set('useCreateIndex', true);
 connect(
   process.env.DB_URI!,
   {
