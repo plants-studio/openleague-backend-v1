@@ -28,7 +28,28 @@ export interface ILeague extends Document {
   content?: string;
   fee?: number;
   host?: Schema.Types.ObjectId;
-  game?: string;
+  game?:
+    | 'League of Legends'
+    | 'Overwatch'
+    | 'Valorant'
+    | 'Hearthstone'
+    | 'Crazyracing Kartrider'
+    | "Tom Clancy's Rainbow Six Siege"
+    | 'StarCraft'
+    | 'StarCraft II'
+    | 'FIFA Online 4'
+    | 'Civilization VI'
+    | 'Tekken 7'
+    | 'Sudden Attack'
+    | 'Among Us'
+    | 'Fall Guys'
+    | 'Call of Duty'
+    | 'Apex Legends'
+    | 'Grand Theft Auto V'
+    | 'Dota 2'
+    | "PLAYERUNKNOWN'S BATTLEGROUNDS"
+    | 'Fortnite'
+    | 'ETC';
   teams?: [Schema.Types.ObjectId];
   teamMin?: number;
   teamMax?: number;
