@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { PaginateResult } from 'mongoose';
 
-import games from '../../docs/games.json';
+import category from '../../docs/category.json';
 import Post, { IPost } from '../../models/Post';
 
 export default async (req: Request, res: Response) => {
@@ -14,11 +14,14 @@ export default async (req: Request, res: Response) => {
   const limit = Number.parseInt(tl!.toString(), 10);
   let filter: Array<string> = req.body.category;
   if (!filter) {
-    filter = games;
+    filter = category;
   }
   const list = await Promise.all(
-    filter.map(async (category) => {
-      const result1: PaginateResult<IPost> = await Post.paginate({ category }, { page, limit });
+    filter.map(async (cate) => {
+      const result1: PaginateResult<IPost> = await Post.paginate(
+        { category: cate },
+        { page, limit },
+      );
       const result2 = await Promise.all(
         result1.docs.map((data) => {
           const temp = data;

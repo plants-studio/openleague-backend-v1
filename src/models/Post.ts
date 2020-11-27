@@ -23,6 +23,6 @@ export interface IPost extends Document {
   title?: string;
   content?: string;
   writer?: Schema.Types.ObjectId;
-  category?: string;
+  category?: 'Free' | 'Humor' | 'Illustration' | 'Recruitment';
   timestamp?: Date;
 }
