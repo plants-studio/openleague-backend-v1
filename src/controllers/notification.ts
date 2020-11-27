@@ -6,7 +6,18 @@ import Notification, { INotification } from '../models/Notification';
 import Team, { ITeam } from '../models/Team';
 import User, { IUser } from '../models/User';
 
-export const add = async (req: IRequest, res: Response) => {
+export const check = async (req: IRequest, res: Response) => {
+  const { token }: IToken = req;
+  const result: INotification[] = [];
+  token?.user?.notification?.forEach(async (id) => {
+    const notification: INotification = await Notification.findById(id);
+    result.push(notification);
+  });
+
+  res.status(200).send(result);
+};
+
+export const send = async (req: IRequest, res: Response) => {
   const { token }: IToken = req;
   const { title, description, category }: INotification = req.body;
   const { target, type } = req.body;
@@ -95,15 +106,4 @@ export const add = async (req: IRequest, res: Response) => {
       res.sendStatus(412);
       break;
   }
-};
-
-export const check = async (req: IRequest, res: Response) => {
-  const { token }: IToken = req;
-  const result: INotification[] = [];
-  token?.user?.notification?.forEach(async (id) => {
-    const notification: INotification = await Notification.findById(id);
-    result.push(notification);
-  });
-
-  res.status(200).send(result);
 };
