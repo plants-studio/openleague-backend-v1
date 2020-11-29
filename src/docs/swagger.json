@@ -374,7 +374,7 @@
       "post": {
         "tags": ["league"],
         "summary": "Create a new league",
-        "description": "Create a new league by receiving title, content, fee, game category, minimum number of teams, Maximum number of teams, number of members required for the team, reward",
+        "description": "Create a new league by receiving league data",
         "security": [
           {
             "BearerAuth": []
@@ -390,11 +390,32 @@
                   "title": {
                     "type": "string"
                   },
-                  "content": {
+                  "applicationDeadline": {
+                    "type": "string",
+                    "pattern": "/([0-9]{4})-(?:[0-9]{2})-([0-9]{2})/",
+                    "example": "2019-05-17",
+                    "format": "date"
+                  },
+                  "leagueStartDay": {
+                    "type": "string",
+                    "pattern": "/([0-9]{4})-(?:[0-9]{2})-([0-9]{2})/",
+                    "example": "2019-05-17",
+                    "format": "date"
+                  },
+                  "leagueEndDay": {
+                    "type": "string",
+                    "pattern": "/([0-9]{4})-(?:[0-9]{2})-([0-9]{2})/",
+                    "example": "2019-05-17",
+                    "format": "date"
+                  },
+                  "introduce": {
                     "type": "string"
                   },
-                  "fee": {
-                    "type": "number"
+                  "rule": {
+                    "type": "string"
+                  },
+                  "thumbnail": {
+                    "type": "string"
                   },
                   "game": {
                     "type": "string"
@@ -408,7 +429,13 @@
                   "teamReqMemCnt": {
                     "type": "number"
                   },
-                  "reward": {
+                  "placeType": {
+                    "type": "string"
+                  },
+                  "discordLink": {
+                    "type": "string"
+                  },
+                  "location": {
                     "type": "string"
                   }
                 }
@@ -1064,23 +1091,35 @@
           "title": {
             "type": "string"
           },
-          "content": {
+          "applicationDeadline": {
+            "type": "string",
+            "pattern": "/([0-9]{4})-(?:[0-9]{2})-([0-9]{2})/",
+            "example": "2019-05-17",
+            "format": "date"
+          },
+          "leagueStartDay": {
+            "type": "string",
+            "pattern": "/([0-9]{4})-(?:[0-9]{2})-([0-9]{2})/",
+            "example": "2019-05-17",
+            "format": "date"
+          },
+          "leagueEndDay": {
+            "type": "string",
+            "pattern": "/([0-9]{4})-(?:[0-9]{2})-([0-9]{2})/",
+            "example": "2019-05-17",
+            "format": "date"
+          },
+          "introduce": {
             "type": "string"
           },
-          "fee": {
-            "type": "number"
+          "rule": {
+            "type": "string"
           },
-          "host": {
+          "thumbnail": {
             "type": "string"
           },
           "game": {
             "type": "string"
-          },
-          "teams": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
           },
           "teamMin": {
             "type": "number"
@@ -1091,8 +1130,23 @@
           "teamReqMemCnt": {
             "type": "number"
           },
-          "reward": {
+          "placeType": {
             "type": "string"
+          },
+          "discordLink": {
+            "type": "string"
+          },
+          "location": {
+            "type": "string"
+          },
+          "host": {
+            "type": "string"
+          },
+          "teams": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
           }
         }
       },

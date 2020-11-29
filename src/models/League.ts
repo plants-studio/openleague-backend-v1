@@ -4,22 +4,28 @@ import mongoosePaginate from 'mongoose-paginate-v2';
 const League = new Schema(
   {
     title: String,
-    content: String,
-    fee: Number,
-    host: Schema.Types.ObjectId,
+    applicationDeadline: String,
+    leagueStartDay: String,
+    leagueEndDay: String,
+    introduce: String,
+    rule: String,
+    thumbnail: String,
     game: String,
-    teams: [Schema.Types.ObjectId],
     teamMin: Number,
     teamMax: Number,
     teamReqMemCnt: Number,
-    reward: String,
+    placeType: String,
+    discordLink: String,
+    location: String,
+    host: Schema.Types.ObjectId,
+    teams: [Schema.Types.ObjectId],
   },
   {
     versionKey: false,
   },
 );
 
-League.index({ title: 'text', content: 'text' }, { defaultLanguage: 'kr' });
+League.index({ title: 'text', introduce: 'text' }, { defaultLanguage: 'kr' });
 League.plugin(mongoosePaginate);
 
 const Model = model('League', League);
@@ -28,35 +34,26 @@ Model.createIndexes();
 export default Model;
 
 export interface ILeague extends Document {
-  title?: string;
-  content?: string;
-  fee?: number;
-  host?: Schema.Types.ObjectId;
+  title: string;
+  applicationDeadline: string;
+  leagueStartDay: string;
+  leagueEndDay: string;
+  introduce: string;
+  rule: string;
+  thumbnail: string;
   game?:
-    | 'League of Legends'
+    | 'League Of Legend'
     | 'Overwatch'
     | 'Valorant'
-    | 'Hearthstone'
-    | 'Crazyracing Kartrider'
-    | "Tom Clancy's Rainbow Six Siege"
-    | 'StarCraft'
-    | 'StarCraft II'
-    | 'FIFA Online 4'
-    | 'Civilization VI'
-    | 'Tekken 7'
-    | 'Sudden Attack'
-    | 'Among Us'
-    | 'Fall Guys'
-    | 'Call of Duty'
-    | 'Apex Legends'
-    | 'Grand Theft Auto V'
-    | 'Dota 2'
-    | "PLAYERUNKNOWN'S BATTLEGROUNDS"
-    | 'Fortnite'
-    | 'ETC';
-  teams?: Schema.Types.ObjectId[];
-  teamMin?: number;
-  teamMax?: number;
-  teamReqMemCnt?: number;
-  reward?: string;
+    | 'Battlegrounds'
+    | 'Rainbow Six Siege'
+    | 'etc';
+  teamMin: number;
+  teamMax: number;
+  teamReqMemCnt: number;
+  placeType: string;
+  discordLink: string;
+  location: string;
+  host: Schema.Types.ObjectId;
+  teams: Schema.Types.ObjectId[];
 }
