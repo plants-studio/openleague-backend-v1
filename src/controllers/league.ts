@@ -8,9 +8,37 @@ import Team, { ITeam } from '../models/Team';
 export const create = async (req: IRequest, res: Response) => {
   const { token }: IToken = req;
   const {
-    title, content, fee, game, teamMin, teamMax, teamReqMemCnt, reward,
+    title,
+    applicationDeadline,
+    leagueStartDay,
+    leagueEndDay,
+    introduce,
+    rule,
+    thumbnail,
+    game,
+    teamMin,
+    teamMax,
+    teamReqMemCnt,
+    placeType,
+    discordLink,
+    location,
   }: ILeague = req.body;
-  if (!(title && content && fee && game && teamMin && teamMax && teamReqMemCnt && reward)) {
+  if (
+    !(
+      title
+      && applicationDeadline
+      && leagueStartDay
+      && leagueEndDay
+      && introduce
+      && rule
+      && game
+      && teamMin
+      && teamMax
+      && teamReqMemCnt
+      && placeType
+      && (placeType === 'online' ? discordLink : location)
+    )
+  ) {
     res.sendStatus(412);
     return;
   }
@@ -21,14 +49,20 @@ export const create = async (req: IRequest, res: Response) => {
 
   const newLeague: ILeague = new League({
     title,
-    content,
-    fee,
-    host: token?.user?._id,
+    applicationDeadline,
+    leagueStartDay,
+    leagueEndDay,
+    introduce,
+    rule,
+    thumbnail,
     game,
     teamMin,
     teamMax,
     teamReqMemCnt,
-    reward,
+    placeType,
+    discordLink,
+    location,
+    host: token?.user?._id,
   });
 
   await newLeague.save();
