@@ -475,6 +475,14 @@
               "type": "number"
             },
             "description": "Item limit"
+          },
+          {
+            "in":" query",
+            "name": "search",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Search word"
           }
         ],
         "requestBody": {
@@ -700,6 +708,14 @@
               "type": "number"
             },
             "description": "Item limit"
+          },
+          {
+            "in":" query",
+            "name": "search",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Search word"
           }
         ],
         "responses": {
@@ -859,6 +875,14 @@
               "type": "number"
             },
             "description": "Item limit"
+          },
+          {
+            "in":" query",
+            "name": "search",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Search word"
           }
         ],
         "responses": {
