@@ -28,6 +28,7 @@ export const list = async (req: Request, res: Response) => {
           result1.docs.map((data) => {
             const temp = data;
             temp.content = undefined;
+            temp.comment = undefined;
             return temp;
           }),
         );
@@ -42,6 +43,7 @@ export const list = async (req: Request, res: Response) => {
         result1.docs.map((data) => {
           const temp = data;
           temp.content = undefined;
+          temp.comment = undefined;
           return temp;
         }),
       );

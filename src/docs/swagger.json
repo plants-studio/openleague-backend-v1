@@ -728,7 +728,21 @@
                   "items": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/Post"
+                      "type": "object",
+                      "properties": {
+                        "title": {
+                          "type": "string"
+                        },
+                        "writer": {
+                          "type": "string"
+                        },
+                        "category": {
+                          "type": "string"
+                        },
+                        "timestamp": {
+                          "type": "string"
+                        }
+                      }
                     }
                   }
                 }
