@@ -2,7 +2,7 @@ import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import { CronJob } from 'cron';
 import { config } from 'dotenv-safe';
-import express, { json, urlencoded } from 'express';
+import express, { json, static as _static, urlencoded } from 'express';
 import { verify } from 'jsonwebtoken';
 import { connect, set } from 'mongoose';
 import morgan from 'morgan';
@@ -16,12 +16,13 @@ const app = express();
 
 app.use(cookieParser());
 app.use(cors());
-app.use(json());
-app.use(urlencoded({ extended: false }));
+app.use(json({ limit: '3mb' }));
+app.use(urlencoded({ limit: '3mb', extended: false }));
 app.use(morgan('dev'));
 
 app.use('/', router);
 app.use('/api-docs', swagger.serve, swagger.setup(document));
+app.use('/static', _static(`${__dirname}/public`));
 app.get('/callback', (_req, res) => {
   res.sendStatus(200);
 });
