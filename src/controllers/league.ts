@@ -1,9 +1,12 @@
 import { Request, Response } from 'express';
+import { readFileSync } from 'fs';
+import { PaginateResult } from 'mongoose';
+import { join } from 'path';
+import sharp from 'sharp';
 
 import games from '../docs/games.json';
 import { IRequest, IToken } from '../middleware/auth';
 import League, { ILeague } from '../models/League';
-import Team, { ITeam } from '../models/Team';
 
 export const create = async (req: IRequest, res: Response) => {
   const { token }: IToken = req;
@@ -84,62 +87,119 @@ export const list = async (req: Request, res: Response) => {
   const result = await Promise.all(
     filter.map(async (game) => {
       if (search) {
-        const pagination = await League.paginate(
+        const result1: PaginateResult<ILeague> = await League.paginate(
           { game, $text: { $search: search as string } },
           { page, limit },
         );
-        return pagination.docs;
+        const result2 = await Promise.all(
+          result1.docs.map(async (data) => {
+            const temp = data;
+            if (temp.thumbnail) {
+              const id = temp._id.toString('base64');
+              const dir = join(__dirname, '..', 'public', 'images', 'thumbnails');
+              try {
+                readFileSync(join(dir, `${id}.webp`));
+                temp.thumbnail = `/images/thumbnails/${id}.webp`;
+              } catch {
+                const buffer = temp.thumbnail.split(';base64,')[1];
+                try {
+                  await sharp(Buffer.from(buffer, 'base64'))
+                    .webp({ lossless: true })
+                    .toFile(join(dir, `${id}.webp`));
+                  temp.thumbnail = `/images/thumbnails/${id}.webp`;
+                } catch (err) {
+                  console.error(err);
+                  temp.thumbnail = '/images/thumbnails/default.webp';
+                }
+              }
+            } else {
+              temp.thumbnail = '/images/thumbnails/default.webp';
+            }
+            temp.teams = undefined;
+            temp.introduce = undefined;
+            temp.rule = undefined;
+            temp.discordLink = undefined;
+            temp.location = undefined;
+            return temp;
+          }),
+        );
+        return result2;
       }
-      const pagination = await League.paginate({ game }, { page, limit });
-      return pagination.docs;
+      const result1 = await League.paginate({ game }, { page, limit });
+      const result2 = await Promise.all(
+        result1.docs.map(async (data) => {
+          const temp = data;
+          if (temp.thumbnail) {
+            const id = temp._id.toString('base64');
+            const dir = join(__dirname, '..', 'public', 'images', 'thumbnails');
+            try {
+              readFileSync(join(dir, `${id}.webp`));
+              temp.thumbnail = `/images/thumbnails/${id}.webp`;
+            } catch {
+              const buffer = temp.thumbnail.split(';base64,')[1];
+              try {
+                await sharp(Buffer.from(buffer, 'base64'))
+                  .webp({ lossless: true })
+                  .toFile(join(dir, `${id}.webp`));
+                temp.thumbnail = `/images/thumbnails/${id}.webp`;
+              } catch (err) {
+                console.error(err);
+                temp.thumbnail = '/images/thumbnails/default.webp';
+              }
+            }
+          } else {
+            temp.thumbnail = '/images/thumbnails/default.webp';
+          }
+          temp.teams = undefined;
+          temp.introduce = undefined;
+          temp.rule = undefined;
+          temp.discordLink = undefined;
+          temp.location = undefined;
+          return temp;
+        }),
+      );
+      return result2;
     }),
   );
   res.status(200).send(result);
 };
 
-export const participate = async (req: IRequest, res: Response) => {
-  const { token }: IToken = req;
+export const read = async (req: Request, res: Response) => {
   const { id } = req.params;
-  const { name, introduce } = req.body;
-  if (!(id && name && introduce)) {
+  if (!id) {
     res.sendStatus(412);
     return;
   }
 
-  const league: ILeague = await League.findById(id);
+  const league = await League.findById(id);
   if (!league) {
     res.sendStatus(404);
     return;
   }
-  if (league.teams?.length === league.teamMax) {
-    res.status(409).send('리그가 꽉 찼습니다');
-    return;
-  }
 
-  let err = false;
-  league.teams?.forEach(async (teamId) => {
-    const team: ITeam = await Team.findById(teamId);
-    team.member?.forEach(async (userId) => {
-      if (userId === token?.user?._id) {
-        err = true;
+  if (league.thumbnail) {
+    const tempId = league._id.toString('base64');
+    const dir = join(__dirname, '..', 'public', 'images', 'thumbnails');
+    try {
+      readFileSync(join(dir, `${tempId}.webp`));
+      league.thumbnail = `/images/thumbnails/${tempId}.webp`;
+    } catch {
+      const buffer = league.thumbnail.split(';base64,')[1];
+      try {
+        await sharp(Buffer.from(buffer, 'base64'))
+          .webp({ lossless: true })
+          .toFile(join(dir, `${tempId}.webp`));
+        league.thumbnail = `/images/thumbnails/${tempId}.webp`;
+      } catch (err) {
+        console.error(err);
+        league.thumbnail = '/images/thumbnails/default.webp';
       }
-    });
-    if (team.leader === token?.user?._id) {
-      err = true;
     }
-  });
-  if (err) {
-    res.status(409).send('이미 해당 리그에 참여 중입니다');
-    return;
+  } else {
+    league.thumbnail = '/images/thumbnails/default.webp';
   }
 
-  const team: ITeam = new Team({
-    name,
-    introduce,
-    leader: token?.user?._id,
-  });
-  await team.save();
-  await league.updateOne({ $push: { teams: team._id } });
+  res.status(200).send(league);
 };
 
 export const remove = async (req: IRequest, res: Response) => {

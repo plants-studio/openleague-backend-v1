@@ -43,6 +43,41 @@
     }
   ],
   "paths": {
+    "/auth": {
+      "put": {
+        "tags": ["auth"],
+        "summary": "Edit user data",
+        "description": "Edit user data",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "description": "User data",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
     "/auth/discord": {
       "post": {
         "tags": ["auth"],
@@ -477,7 +512,7 @@
             "description": "Item limit"
           },
           {
-            "in":" query",
+            "in": " query",
             "name": "search",
             "schema": {
               "type": "string"
@@ -512,7 +547,51 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/League"
+                    "type": "object",
+                    "properties": {
+                      "title": {
+                        "type": "string"
+                      },
+                      "applicationDeadline": {
+                        "type": "string",
+                        "pattern": "/([0-9]{4})-(?:[0-9]{2})-([0-9]{2})/",
+                        "example": "2019-05-17",
+                        "format": "date"
+                      },
+                      "leagueStartDay": {
+                        "type": "string",
+                        "pattern": "/([0-9]{4})-(?:[0-9]{2})-([0-9]{2})/",
+                        "example": "2019-05-17",
+                        "format": "date"
+                      },
+                      "leagueEndDay": {
+                        "type": "string",
+                        "pattern": "/([0-9]{4})-(?:[0-9]{2})-([0-9]{2})/",
+                        "example": "2019-05-17",
+                        "format": "date"
+                      },
+                      "thumbnail": {
+                        "type": "string"
+                      },
+                      "game": {
+                        "type": "string"
+                      },
+                      "teamMin": {
+                        "type": "number"
+                      },
+                      "teamMax": {
+                        "type": "number"
+                      },
+                      "teamReqMemCnt": {
+                        "type": "number"
+                      },
+                      "applicant": {
+                        "type": "number"
+                      },
+                      "host": {
+                        "type": "string"
+                      }
+                    }
                   }
                 }
               }
@@ -525,15 +604,10 @@
       }
     },
     "/league/{id}": {
-      "put": {
+      "get": {
         "tags": ["league"],
-        "summary": "Apply to the league",
-        "description": "The leader of the team applies to join the league",
-        "security": [
-          {
-            "BearerAuth": []
-          }
-        ],
+        "summary": "Get detail of the league",
+        "description": "Get detail of the league with the Object ID of the league",
         "parameters": [
           {
             "in": "path",
@@ -545,40 +619,19 @@
             "description": "League object id"
           }
         ],
-        "requestBody": {
-          "description": "Team data",
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "name": {
-                    "type": "string"
-                  },
-                  "introduce": {
-                    "type": "string"
-                  }
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/League"
                 }
               }
             }
           },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "Success"
-          },
-          "403": {
-            "description": "Forbidden"
-          },
           "404": {
             "description": "Not Found"
-          },
-          "409": {
-            "description": "Conflict"
-          },
-          "412": {
-            "description": "Precondition Failed"
           }
         }
       },
@@ -710,7 +763,7 @@
             "description": "Item limit"
           },
           {
-            "in":" query",
+            "in": " query",
             "name": "search",
             "schema": {
               "type": "string"
@@ -728,7 +781,21 @@
                   "items": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/Post"
+                      "type": "object",
+                      "properties": {
+                        "title": {
+                          "type": "string"
+                        },
+                        "writer": {
+                          "type": "string"
+                        },
+                        "category": {
+                          "type": "string"
+                        },
+                        "timestamp": {
+                          "type": "string"
+                        }
+                      }
                     }
                   }
                 }
@@ -853,6 +920,55 @@
       }
     },
     "/team": {
+      "post": {
+        "tags": ["team"],
+        "summary": "Create team",
+        "description": "Create team",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "description": "Team data with league object id",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "leagueId": {
+                    "type": "string"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "introduce": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "409": {
+            "description": "Conflict"
+          },
+          "412": {
+            "description": "Precondition Failed"
+          }
+        }
+      },
       "get": {
         "tags": ["team"],
         "summary": "Get the list of teams",
@@ -877,7 +993,7 @@
             "description": "Item limit"
           },
           {
-            "in":" query",
+            "in": " query",
             "name": "search",
             "schema": {
               "type": "string"
@@ -1163,6 +1279,9 @@
           "location": {
             "type": "string"
           },
+          "applicant": {
+            "type": "number"
+          },
           "host": {
             "type": "string"
           },
@@ -1263,6 +1382,9 @@
             "items": {
               "type": "string"
             }
+          },
+          "profile": {
+            "type": "string"
           },
           "admin": {
             "type": "boolean"

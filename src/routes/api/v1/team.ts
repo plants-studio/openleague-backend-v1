@@ -1,14 +1,15 @@
 import { Router } from 'express';
 
 import {
-  join, list, remove, reply, waiting,
+  create, join, list, remove, reply, waiting,
 } from '../../../controllers/team';
 import auth from '../../../middleware/auth';
 
 const router = Router();
 
-router.put('/:id', auth, join);
+router.post('/', auth, create);
 router.get('/', list);
+router.put('/:id', auth, join);
 router.delete('/:id', auth, remove);
 router.put('/reply/:id', auth, reply);
 router.get('/waiting/:id', auth, waiting);
