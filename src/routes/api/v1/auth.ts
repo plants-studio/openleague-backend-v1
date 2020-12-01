@@ -1,11 +1,12 @@
 import { Router } from 'express';
 
 import {
-  discord, refresh, revoke, signin, signup,
+  discord, edit, refresh, revoke, signin, signup,
 } from '../../../controllers/auth';
 
 const router = Router();
 
+router.put('/', edit);
 router.post('/discord', discord);
 router.post('/refresh', refresh);
 router.post('/revoke', revoke);
