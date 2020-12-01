@@ -17,6 +17,7 @@ const League = new Schema(
     placeType: String,
     discordLink: String,
     location: String,
+    applicant: { type: Number, default: 0 },
     host: Schema.Types.ObjectId,
     teams: [Schema.Types.ObjectId],
   },
@@ -34,13 +35,13 @@ Model.createIndexes();
 export default Model;
 
 export interface ILeague extends Document {
-  title: string;
-  applicationDeadline: string;
-  leagueStartDay: string;
-  leagueEndDay: string;
-  introduce: string;
-  rule: string;
-  thumbnail: string;
+  title?: string;
+  applicationDeadline?: string;
+  leagueStartDay?: string;
+  leagueEndDay?: string;
+  introduce?: string;
+  rule?: string;
+  thumbnail?: string;
   game?:
     | 'League Of Legend'
     | 'Overwatch'
@@ -48,12 +49,13 @@ export interface ILeague extends Document {
     | 'Battlegrounds'
     | 'Rainbow Six Siege'
     | 'etc';
-  teamMin: number;
-  teamMax: number;
-  teamReqMemCnt: number;
-  placeType: string;
-  discordLink: string;
-  location: string;
-  host: Schema.Types.ObjectId;
-  teams: Schema.Types.ObjectId[];
+  teamMin?: number;
+  teamMax?: number;
+  teamReqMemCnt?: number;
+  placeType?: string;
+  discordLink?: string;
+  location?: string;
+  applicant?: number;
+  host?: Schema.Types.ObjectId;
+  teams?: Schema.Types.ObjectId[];
 }
