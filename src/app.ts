@@ -1,7 +1,8 @@
+import 'dotenv-safe/config';
+
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import { CronJob } from 'cron';
-import { config } from 'dotenv-safe';
 import express, { json, static as _static, urlencoded } from 'express';
 import { verify } from 'jsonwebtoken';
 import { connect, set } from 'mongoose';
@@ -26,8 +27,6 @@ app.use('/static', _static(`${__dirname}/public`));
 app.get('/callback', (_req, res) => {
   res.sendStatus(200);
 });
-
-config();
 
 const job = new CronJob('0 0 * * 0', async () => {
   const whitelist: Array<IWhitelist> = await Whitelist.find();
