@@ -119,6 +119,22 @@ export const list = async (req: Request, res: Response) => {
   res.status(200).send(result);
 };
 
+export const read = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  if (!id) {
+    res.sendStatus(412);
+    return;
+  }
+
+  const league = await League.findById(id);
+  if (!league) {
+    res.sendStatus(404);
+    return;
+  }
+
+  res.status(200).send(league);
+};
+
 export const remove = async (req: IRequest, res: Response) => {
   const { token }: IToken = req;
   const { id } = req.params;
