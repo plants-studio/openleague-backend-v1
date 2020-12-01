@@ -1,5 +1,8 @@
 import { Request, Response } from 'express';
+import { readFileSync } from 'fs';
 import { PaginateResult } from 'mongoose';
+import { join } from 'path';
+import sharp from 'sharp';
 
 import games from '../docs/games.json';
 import { IRequest, IToken } from '../middleware/auth';
@@ -89,8 +92,29 @@ export const list = async (req: Request, res: Response) => {
           { page, limit },
         );
         const result2 = await Promise.all(
-          result1.docs.map((data) => {
+          result1.docs.map(async (data) => {
             const temp = data;
+            if (temp.thumbnail) {
+              const id = temp._id.toString('base64');
+              const dir = join(__dirname, '..', 'public', 'images', 'thumbnails');
+              try {
+                readFileSync(join(dir, `${id}.webp`));
+                temp.thumbnail = `/images/thumbnails/${id}.webp`;
+              } catch {
+                const buffer = temp.thumbnail.split(';base64,')[1];
+                try {
+                  await sharp(Buffer.from(buffer, 'base64'))
+                    .webp({ lossless: true })
+                    .toFile(join(dir, `${id}.webp`));
+                  temp.thumbnail = `/images/thumbnails/${id}.webp`;
+                } catch (err) {
+                  console.error(err);
+                  temp.thumbnail = '/images/thumbnails/default.webp';
+                }
+              }
+            } else {
+              temp.thumbnail = '/images/thumbnails/default.webp';
+            }
             temp.teams = undefined;
             temp.introduce = undefined;
             temp.rule = undefined;
@@ -103,8 +127,29 @@ export const list = async (req: Request, res: Response) => {
       }
       const result1 = await League.paginate({ game }, { page, limit });
       const result2 = await Promise.all(
-        result1.docs.map((data) => {
+        result1.docs.map(async (data) => {
           const temp = data;
+          if (temp.thumbnail) {
+            const id = temp._id.toString('base64');
+            const dir = join(__dirname, '..', 'public', 'images', 'thumbnails');
+            try {
+              readFileSync(join(dir, `${id}.webp`));
+              temp.thumbnail = `/images/thumbnails/${id}.webp`;
+            } catch {
+              const buffer = temp.thumbnail.split(';base64,')[1];
+              try {
+                await sharp(Buffer.from(buffer, 'base64'))
+                  .webp({ lossless: true })
+                  .toFile(join(dir, `${id}.webp`));
+                temp.thumbnail = `/images/thumbnails/${id}.webp`;
+              } catch (err) {
+                console.error(err);
+                temp.thumbnail = '/images/thumbnails/default.webp';
+              }
+            }
+          } else {
+            temp.thumbnail = '/images/thumbnails/default.webp';
+          }
           temp.teams = undefined;
           temp.introduce = undefined;
           temp.rule = undefined;
@@ -130,6 +175,28 @@ export const read = async (req: Request, res: Response) => {
   if (!league) {
     res.sendStatus(404);
     return;
+  }
+
+  if (league.thumbnail) {
+    const tempId = league._id.toString('base64');
+    const dir = join(__dirname, '..', 'public', 'images', 'thumbnails');
+    try {
+      readFileSync(join(dir, `${tempId}.webp`));
+      league.thumbnail = `/images/thumbnails/${tempId}.webp`;
+    } catch {
+      const buffer = league.thumbnail.split(';base64,')[1];
+      try {
+        await sharp(Buffer.from(buffer, 'base64'))
+          .webp({ lossless: true })
+          .toFile(join(dir, `${tempId}.webp`));
+        league.thumbnail = `/images/thumbnails/${tempId}.webp`;
+      } catch (err) {
+        console.error(err);
+        league.thumbnail = '/images/thumbnails/default.webp';
+      }
+    }
+  } else {
+    league.thumbnail = '/images/thumbnails/default.webp';
   }
 
   res.status(200).send(league);
