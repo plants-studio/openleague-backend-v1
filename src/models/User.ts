@@ -8,6 +8,7 @@ const User = new Schema(
     discord: String,
     friend: Schema.Types.ObjectId,
     notification: [Schema.Types.ObjectId],
+    profile: String,
     admin: { type: Boolean, default: false },
   },
   {
@@ -24,5 +25,6 @@ export interface IUser extends Document {
   discord?: string;
   friend?: Schema.Types.ObjectId;
   notification?: Schema.Types.ObjectId[];
+  profile?: string;
   admin?: boolean;
 }

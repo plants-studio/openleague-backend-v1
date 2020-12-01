@@ -43,6 +43,41 @@
     }
   ],
   "paths": {
+    "/auth": {
+      "put": {
+        "tags": ["auth"],
+        "summary": "Edit user data",
+        "description": "Edit user data",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "description": "User data",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
     "/auth/discord": {
       "post": {
         "tags": ["auth"],
@@ -1277,6 +1312,9 @@
             "items": {
               "type": "string"
             }
+          },
+          "profile": {
+            "type": "string"
           },
           "admin": {
             "type": "boolean"

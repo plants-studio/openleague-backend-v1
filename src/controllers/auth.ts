@@ -3,6 +3,7 @@ import DiscordOAuth2 from 'discord-oauth2';
 import { Request, Response } from 'express';
 import { sign, verify } from 'jsonwebtoken';
 
+import { IRequest, IToken } from '../middleware/auth';
 import Friend, { IFriend } from '../models/Friend';
 import User, { IUser } from '../models/User';
 import Whitelist, { IWhitelist } from '../models/Whitelist';
@@ -47,6 +48,20 @@ export const discord = async (req: Request, res: Response) => {
     await newFriend.save();
   }
   res.status(200).send(data);
+};
+
+export const edit = async (req: IRequest, res: Response) => {
+  const { token }: IToken = req;
+  const { name, profile } = req.body;
+
+  const user: IUser = await User.findById(token?.user?._id);
+  if (name) {
+    await user.updateOne({ name });
+  }
+  if (profile) {
+    await user.updateOne({ name });
+  }
+  res.sendStatus(200);
 };
 
 export const refresh = async (req: Request, res: Response) => {
@@ -168,7 +183,9 @@ export const signin = async (req: Request, res: Response) => {
 };
 
 export const signup = async (req: Request, res: Response) => {
-  const { name, email, password }: IUser = req.body;
+  const {
+    name, email, password, profile,
+  }: IUser = req.body;
   if (!(name && email && password)) {
     res.sendStatus(412);
     return;
@@ -201,6 +218,7 @@ export const signup = async (req: Request, res: Response) => {
     email,
     password: `${encrypt}|${salt}`,
     friend: newFriend._id,
+    profile,
   });
 
   await newUser.save();
