@@ -59,10 +59,22 @@ export const edit = async (req: IRequest, res: Response) => {
 
   const user: IUser = await User.findById(token?.user?._id);
   if (name) {
-    await user.updateOne({ name });
+    if (name.search('#') !== -1) {
+      res.status(409);
+      return;
+    }
+
+    let nameTag;
+    let nameCheck = true;
+    while (nameCheck) {
+      const tag = (Math.floor(Math.random() * 90000) + 10000).toString();
+      nameTag = `${name}#${tag}`;
+      nameCheck = await User.findOne({ name: nameTag });
+    }
+    await user.updateOne({ name: nameTag });
   }
   if (profile) {
-    await user.updateOne({ name });
+    await user.updateOne({ profile });
   }
   res.sendStatus(200);
 };
