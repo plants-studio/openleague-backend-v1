@@ -19,8 +19,8 @@ const app = express();
 
 app.use(cookieParser());
 app.use(cors());
-app.use(json({ limit: '3mb' }));
-app.use(urlencoded({ limit: '3mb', extended: false }));
+app.use(json({ limit: '30mb' }));
+app.use(urlencoded({ limit: '30mb', extended: false }));
 app.use(morgan('dev'));
 app.use(_static(`${__dirname}/public`));
 
