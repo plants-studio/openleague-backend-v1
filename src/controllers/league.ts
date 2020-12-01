@@ -1,9 +1,9 @@
 import { Request, Response } from 'express';
+import { PaginateResult } from 'mongoose';
 
 import games from '../docs/games.json';
 import { IRequest, IToken } from '../middleware/auth';
 import League, { ILeague } from '../models/League';
-import Team, { ITeam } from '../models/Team';
 
 export const create = async (req: IRequest, res: Response) => {
   const { token }: IToken = req;
@@ -84,62 +84,39 @@ export const list = async (req: Request, res: Response) => {
   const result = await Promise.all(
     filter.map(async (game) => {
       if (search) {
-        const pagination = await League.paginate(
+        const result1: PaginateResult<ILeague> = await League.paginate(
           { game, $text: { $search: search as string } },
           { page, limit },
         );
-        return pagination.docs;
+        const result2 = await Promise.all(
+          result1.docs.map((data) => {
+            const temp = data;
+            temp.teams = undefined;
+            temp.introduce = undefined;
+            temp.rule = undefined;
+            temp.discordLink = undefined;
+            temp.location = undefined;
+            return temp;
+          }),
+        );
+        return result2;
       }
-      const pagination = await League.paginate({ game }, { page, limit });
-      return pagination.docs;
+      const result1 = await League.paginate({ game }, { page, limit });
+      const result2 = await Promise.all(
+        result1.docs.map((data) => {
+          const temp = data;
+          temp.teams = undefined;
+          temp.introduce = undefined;
+          temp.rule = undefined;
+          temp.discordLink = undefined;
+          temp.location = undefined;
+          return temp;
+        }),
+      );
+      return result2;
     }),
   );
   res.status(200).send(result);
-};
-
-export const participate = async (req: IRequest, res: Response) => {
-  const { token }: IToken = req;
-  const { id } = req.params;
-  const { name, introduce } = req.body;
-  if (!(id && name && introduce)) {
-    res.sendStatus(412);
-    return;
-  }
-
-  const league: ILeague = await League.findById(id);
-  if (!league) {
-    res.sendStatus(404);
-    return;
-  }
-  if (league.teams?.length === league.teamMax) {
-    res.status(409).send('리그가 꽉 찼습니다');
-    return;
-  }
-
-  let err = false;
-  league.teams?.forEach(async (teamId) => {
-    const team: ITeam = await Team.findById(teamId);
-    team.member?.forEach(async (userId) => {
-      if (userId === token?.user?._id) {
-        err = true;
-      }
-    });
-    if (team.leader === token?.user?._id) {
-      err = true;
-    }
-  });
-  if (err) {
-    res.status(409).send('이미 해당 리그에 참여 중입니다');
-    return;
-  }
-
-  const team: ITeam = new Team({
-    name,
-    introduce,
-    leader: token?.user?._id,
-  });
-  await team.save();
-  await league.updateOne({ $push: { teams: team._id } });
 };
 
 export const remove = async (req: IRequest, res: Response) => {
