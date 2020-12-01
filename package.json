@@ -3,9 +3,11 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "build": "tsc",
+    "clean": "rimraf dist/",
+    "build": "yarn clean && tsc && yarn copy",
     "dev": "nodemon --exec ts-node ./src/bin/www.ts --watch",
-    "start": "node dist/bin/www.js"
+    "start": "node dist/bin/www.js",
+    "copy": "copyfiles -u 1 src/**/*.webp dist/"
   },
   "dependencies": {
     "cookie-parser": "~1.4.4",
@@ -38,12 +40,14 @@
     "@types/swagger-ui-express": "^4.1.2",
     "@typescript-eslint/eslint-plugin": "^4.3.0",
     "@typescript-eslint/parser": "^4.3.0",
+    "copyfiles": "^2.4.1",
     "eslint": "^7.10.0",
     "eslint-config-airbnb-base": "^14.2.0",
     "eslint-plugin-import": "2.21.2",
     "eslint-plugin-simple-import-sort": "^5.0.3",
     "nodemon": "^2.0.4",
     "prettier-eslint": "^11.0.0",
+    "rimraf": "^3.0.2",
     "ts-node": "^9.0.0",
     "typescript": "^4.0.3"
   }
