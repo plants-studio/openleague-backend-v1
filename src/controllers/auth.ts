@@ -1,7 +1,10 @@
 import { pbkdf2Sync, randomBytes } from 'crypto';
 import DiscordOAuth2 from 'discord-oauth2';
 import { Request, Response } from 'express';
+import { readFileSync } from 'fs';
 import { sign, verify } from 'jsonwebtoken';
+import { join } from 'path';
+import sharp from 'sharp';
 
 import { IRequest, IToken } from '../middleware/auth';
 import Friend, { IFriend } from '../models/Friend';
@@ -137,7 +140,6 @@ export const revoke = async (req: Request, res: Response) => {
 
 export const signin = async (req: Request, res: Response) => {
   const { email, password }: IUser = req.body;
-
   if (!(email && password)) {
     res.sendStatus(412);
     return;
@@ -162,6 +164,28 @@ export const signin = async (req: Request, res: Response) => {
   }
 
   user.password = undefined;
+
+  if (user.profile) {
+    const id = user._id.toString('base64');
+    const dir = join(__dirname, '..', 'public', 'images', 'profiles');
+    try {
+      readFileSync(join(dir, `${id}.webp`));
+      user.profile = `/images/profiles/${id}.webp`;
+    } catch {
+      const data = user.profile.split(';base64,')[1];
+      try {
+        await sharp(Buffer.from(data, 'base64'))
+          .webp({ lossless: true })
+          .toFile(join(dir, `${id}.webp`));
+        user.profile = `/images/profiles/${id}.webp`;
+      } catch (err) {
+        console.error(err);
+        user.profile = '/images/profiles/default.webp';
+      }
+    }
+  } else {
+    user.profile = '/images/profiles/default.webp';
+  }
 
   const accessToken = sign({ user }, process.env.ACCESS_KEY!, { expiresIn: '7h' });
   const refreshToken = sign({ user }, process.env.REFRESH_KEY!, { expiresIn: '7d' });
