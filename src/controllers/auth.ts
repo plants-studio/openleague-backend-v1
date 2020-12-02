@@ -24,15 +24,11 @@ export const discord = async (req: Request, res: Response) => {
     return;
   }
 
-  const nameTag = `${user.username}#${user.discriminator}`;
+  let data;
 
-  const data = {
-    email: user.email,
-    name: nameTag,
-  };
-
-  const userData = await User.findOne({ discord: user.id });
+  const userData: IUser = await User.findOne({ discord: user.id });
   if (!userData) {
+    const nameTag = `${user.username}#${user.discriminator}`;
     const newFriend: IFriend = new Friend();
     const newUser: IUser = new User({
       email: user.email,
@@ -49,6 +45,20 @@ export const discord = async (req: Request, res: Response) => {
 
     await newUser.save();
     await newFriend.save();
+
+    data = {
+      email: user.email,
+      name: nameTag,
+      friend: newFriend._id,
+      // TODO 디스코드 avatar base64 형태로 들고와서 DB에 저장하고 static에 저장
+    };
+  } else {
+    data = {
+      email: userData.email,
+      name: userData.name,
+      profile: userData.profile,
+      friend: userData.friend,
+    };
   }
   res.status(200).send(data);
 };
