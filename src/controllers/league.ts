@@ -8,6 +8,10 @@ import games from '../docs/games.json';
 import { IRequest, IToken } from '../middleware/auth';
 import League, { ILeague } from '../models/League';
 
+const flat = (arr: Array<any>, d = 1): Array<any> => (d > 0
+  ? arr.reduce((acc, val) => acc.concat(Array.isArray(val) ? flat(val, d - 1) : val), [])
+  : arr.slice());
+
 export const create = async (req: IRequest, res: Response) => {
   const { token }: IToken = req;
   const {
@@ -84,8 +88,30 @@ export const list = async (req: Request, res: Response) => {
   if (!filter) {
     filter = games;
   }
+  const random = Math.floor(Math.random() * 3 + 1);
   const result = await Promise.all(
     filter.map(async (game) => {
+      let g: string;
+      switch (game) {
+        case 'League Of Legend':
+          g = 'lol';
+          break;
+        case 'Overwatch':
+          g = 'overwatch';
+          break;
+        case 'Valorant':
+          g = 'valorant';
+          break;
+        case 'Battlegrounds':
+          g = 'pubg';
+          break;
+        case 'Rainbow Six Siege':
+          g = 'rainbowsix';
+          break;
+        default:
+          g = 'etc';
+          break;
+      }
       if (search) {
         const result1: PaginateResult<ILeague> = await League.paginate(
           { game, $text: { $search: search as string } },
@@ -109,11 +135,11 @@ export const list = async (req: Request, res: Response) => {
                   temp.thumbnail = `/images/thumbnails/${id}.webp`;
                 } catch (err) {
                   console.error(err);
-                  temp.thumbnail = '/images/thumbnails/default.webp';
+                  temp.thumbnail = `/images/thumbnails/${g}/default${random}.webp`;
                 }
               }
             } else {
-              temp.thumbnail = '/images/thumbnails/default.webp';
+              temp.thumbnail = `/images/thumbnails/${g}/default${random}.webp`;
             }
             temp.teams = undefined;
             temp.introduce = undefined;
@@ -144,11 +170,11 @@ export const list = async (req: Request, res: Response) => {
                 temp.thumbnail = `/images/thumbnails/${id}.webp`;
               } catch (err) {
                 console.error(err);
-                temp.thumbnail = '/images/thumbnails/default.webp';
+                temp.thumbnail = `/images/thumbnails/${g}/default${random}.webp`;
               }
             }
           } else {
-            temp.thumbnail = '/images/thumbnails/default.webp';
+            temp.thumbnail = `/images/thumbnails/${g}/default${random}.webp`;
           }
           temp.teams = undefined;
           temp.introduce = undefined;
@@ -161,7 +187,7 @@ export const list = async (req: Request, res: Response) => {
       return result2;
     }),
   );
-  res.status(200).send(result);
+  res.status(200).send(flat(result, Infinity));
 };
 
 export const read = async (req: Request, res: Response) => {
