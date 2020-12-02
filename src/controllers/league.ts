@@ -187,7 +187,7 @@ export const list = async (req: Request, res: Response) => {
       return result2;
     }),
   );
-  res.status(200).send(flat(result));
+  res.status(200).send(flat(result, Infinity));
 };
 
 export const read = async (req: Request, res: Response) => {
