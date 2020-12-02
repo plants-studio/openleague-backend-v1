@@ -115,5 +115,18 @@ dist
 .yarn/install-state.gz
 .pnp.*
 
-public
-!default.webp
+!src/public/
+src/public/*
+!src/public/images/
+src/public/images/*
+!src/public/images/profiles/
+src/public/images/profiles/*
+!src/public/images/profiles/default.webp
+!src/public/images/thumbnails
+src/public/images/thumbnails/*
+!src/public/images/thumbnails/etc
+!src/public/images/thumbnails/overwatch
+!src/public/images/thumbnails/lol
+!src/public/images/thumbnails/pubg
+!src/public/images/thumbnails/rainbowsix
+!src/public/images/thumbnails/valorant
