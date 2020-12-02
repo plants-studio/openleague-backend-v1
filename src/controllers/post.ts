@@ -5,6 +5,10 @@ import category from '../docs/category.json';
 import { IRequest, IToken } from '../middleware/auth';
 import Post, { IPost } from '../models/Post';
 
+const flat = (arr: Array<any>, d = 1): Array<any> => (d > 0
+  ? arr.reduce((acc, val) => acc.concat(Array.isArray(val) ? flat(val, d - 1) : val), [])
+  : arr.slice());
+
 export const list = async (req: Request, res: Response) => {
   const { page: tp, limit: tl, search } = req.query;
   if (!(tp && tl)) {
@@ -50,7 +54,7 @@ export const list = async (req: Request, res: Response) => {
       return result2;
     }),
   );
-  res.status(200).send(result);
+  res.status(200).send(flat(result));
 };
 
 export const read = async (req: Request, res: Response) => {
