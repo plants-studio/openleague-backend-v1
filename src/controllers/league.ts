@@ -17,7 +17,7 @@ const hex = (str: string) => {
   for (let i = 0; i < str.length; i += 1) {
     result += str.charCodeAt(i);
   }
-  return result;
+  return Number.parseInt(result, 10);
 };
 
 export const create = async (req: IRequest, res: Response) => {
@@ -127,7 +127,7 @@ export const list = async (req: Request, res: Response) => {
         const result2 = await Promise.all(
           result1.docs.map(async (data) => {
             const temp = data;
-            const number = hex(data._id.toString());
+            const number = (hex(data._id.toString()) % 3) + 1;
             if (temp.thumbnail) {
               const id = temp._id.toString('base64');
               const dir = join(__dirname, '..', 'public', 'images', 'thumbnails');
@@ -163,7 +163,7 @@ export const list = async (req: Request, res: Response) => {
       const result2 = await Promise.all(
         result1.docs.map(async (data) => {
           const temp = data;
-          const number = hex(data._id.toString());
+          const number = (hex(data._id.toString()) % 3) + 1;
           if (temp.thumbnail) {
             const id = temp._id.toString('base64');
             const dir = join(__dirname, '..', 'public', 'images', 'thumbnails');
