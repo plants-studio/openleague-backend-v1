@@ -1,7 +1,7 @@
 import { pbkdf2Sync, randomBytes } from 'crypto';
 import DiscordOAuth2 from 'discord-oauth2';
 import { Request, Response } from 'express';
-import { readFileSync } from 'fs';
+import { readFileSync, unlinkSync } from 'fs';
 import { sign, verify } from 'jsonwebtoken';
 import { join } from 'path';
 import sharp from 'sharp';
@@ -85,6 +85,22 @@ export const edit = async (req: IRequest, res: Response) => {
   }
   if (profile) {
     await user.updateOne({ profile });
+    const id = token?.user?._id.toString('base64');
+    const dir = join(__dirname, '..', 'public', 'images', 'profiles');
+    try {
+      readFileSync(join(dir, `${id}.webp`));
+      unlinkSync(join(dir, `${id}.webp`));
+      const buffer = profile.split(';base64,')[1];
+      try {
+        await sharp(Buffer.from(buffer, 'base64'))
+          .webp({ lossless: true })
+          .toFile(join(dir, `${id}.webp`));
+      } catch (err) {
+        console.error(err);
+      }
+    } catch (err) {
+      console.error(err);
+    }
   }
   res.sendStatus(200);
 };
