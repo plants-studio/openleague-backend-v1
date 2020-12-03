@@ -63,7 +63,7 @@
                   "name": {
                     "type": "string"
                   },
-                  "password": {
+                  "profile": {
                     "type": "string"
                   }
                 }
