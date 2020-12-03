@@ -138,7 +138,8 @@ export const list = async (req: Request, res: Response) => {
                 const buffer = temp.thumbnail.split(';base64,')[1];
                 try {
                   await sharp(Buffer.from(buffer, 'base64'))
-                    .webp({ lossless: true })
+                    .resize(356, 200)
+                    .webp({ lossless: false })
                     .toFile(join(dir, `${id}.webp`));
                   temp.thumbnail = `/images/thumbnails/${id}.webp`;
                 } catch (err) {
@@ -174,7 +175,8 @@ export const list = async (req: Request, res: Response) => {
               const buffer = temp.thumbnail.split(';base64,')[1];
               try {
                 await sharp(Buffer.from(buffer, 'base64'))
-                  .webp({ lossless: true })
+                  .resize(356, 200)
+                  .webp({ lossless: false })
                   .toFile(join(dir, `${id}.webp`));
                 temp.thumbnail = `/images/thumbnails/${id}.webp`;
               } catch (err) {
@@ -264,7 +266,8 @@ export const edit = async (req: IRequest, res: Response) => {
       const buffer = thumbnail.split(';base64,')[1];
       try {
         await sharp(Buffer.from(buffer, 'base64'))
-          .webp({ lossless: true })
+          .resize(356, 200)
+          .webp({ lossless: false })
           .toFile(join(dir, `${base64Id}.webp`));
       } catch (err) {
         console.error(err);
@@ -323,7 +326,8 @@ export const read = async (req: Request, res: Response) => {
       const buffer = league.thumbnail.split(';base64,')[1];
       try {
         await sharp(Buffer.from(buffer, 'base64'))
-          .webp({ lossless: true })
+          .resize(356, 200)
+          .webp({ lossless: false })
           .toFile(join(dir, `${tempId}.webp`));
         league.thumbnail = `/images/thumbnails/${tempId}.webp`;
       } catch (err) {

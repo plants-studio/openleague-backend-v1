@@ -93,7 +93,8 @@ export const edit = async (req: IRequest, res: Response) => {
       const buffer = profile.split(';base64,')[1];
       try {
         await sharp(Buffer.from(buffer, 'base64'))
-          .webp({ lossless: true })
+          .resize(150, 150)
+          .webp({ lossless: false })
           .toFile(join(dir, `${id}.webp`));
       } catch (err) {
         console.error(err);
@@ -213,7 +214,8 @@ export const signin = async (req: Request, res: Response) => {
       const data = user.profile.split(';base64,')[1];
       try {
         await sharp(Buffer.from(data, 'base64'))
-          .webp({ lossless: true })
+          .resize(150, 150)
+          .webp({ lossless: false })
           .toFile(join(dir, `${id}.webp`));
         user.profile = `/images/profiles/${id}.webp`;
       } catch (err) {
