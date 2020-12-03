@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { readFileSync } from 'fs';
+import { readFileSync, unlinkSync } from 'fs';
 import { PaginateResult } from 'mongoose';
 import { join } from 'path';
 import sharp from 'sharp';
@@ -11,6 +11,14 @@ import League, { ILeague } from '../models/League';
 const flat = (arr: Array<any>, d = 1): Array<any> => (d > 0
   ? arr.reduce((acc, val) => acc.concat(Array.isArray(val) ? flat(val, d - 1) : val), [])
   : arr.slice());
+
+const hex = (str: string) => {
+  let result = '';
+  for (let i = 0; i < str.length; i += 1) {
+    result += str.charCodeAt(i);
+  }
+  return result;
+};
 
 export const create = async (req: IRequest, res: Response) => {
   const { token }: IToken = req;
@@ -88,7 +96,6 @@ export const list = async (req: Request, res: Response) => {
   if (!filter) {
     filter = games;
   }
-  const random = Math.floor(Math.random() * 3 + 1);
   const result = await Promise.all(
     filter.map(async (game) => {
       let g: string;
@@ -120,6 +127,7 @@ export const list = async (req: Request, res: Response) => {
         const result2 = await Promise.all(
           result1.docs.map(async (data) => {
             const temp = data;
+            const number = hex(data._id.toString());
             if (temp.thumbnail) {
               const id = temp._id.toString('base64');
               const dir = join(__dirname, '..', 'public', 'images', 'thumbnails');
@@ -135,11 +143,11 @@ export const list = async (req: Request, res: Response) => {
                   temp.thumbnail = `/images/thumbnails/${id}.webp`;
                 } catch (err) {
                   console.error(err);
-                  temp.thumbnail = `/images/thumbnails/${g}/default${random}.webp`;
+                  temp.thumbnail = `/images/thumbnails/${g}/default${number}.webp`;
                 }
               }
             } else {
-              temp.thumbnail = `/images/thumbnails/${g}/default${random}.webp`;
+              temp.thumbnail = `/images/thumbnails/${g}/default${number}.webp`;
             }
             temp.teams = undefined;
             temp.introduce = undefined;
@@ -155,6 +163,7 @@ export const list = async (req: Request, res: Response) => {
       const result2 = await Promise.all(
         result1.docs.map(async (data) => {
           const temp = data;
+          const number = hex(data._id.toString());
           if (temp.thumbnail) {
             const id = temp._id.toString('base64');
             const dir = join(__dirname, '..', 'public', 'images', 'thumbnails');
@@ -170,11 +179,11 @@ export const list = async (req: Request, res: Response) => {
                 temp.thumbnail = `/images/thumbnails/${id}.webp`;
               } catch (err) {
                 console.error(err);
-                temp.thumbnail = `/images/thumbnails/${g}/default${random}.webp`;
+                temp.thumbnail = `/images/thumbnails/${g}/default${number}.webp`;
               }
             }
           } else {
-            temp.thumbnail = `/images/thumbnails/${g}/default${random}.webp`;
+            temp.thumbnail = `/images/thumbnails/${g}/default${number}.webp`;
           }
           temp.teams = undefined;
           temp.introduce = undefined;
@@ -188,6 +197,107 @@ export const list = async (req: Request, res: Response) => {
     }),
   );
   res.status(200).send(flat(result, Infinity));
+};
+
+export const edit = async (req: IRequest, res: Response) => {
+  const { token }: IToken = req;
+  const { id } = req.params;
+  const {
+    title,
+    applicationDeadline,
+    leagueStartDay,
+    leagueEndDay,
+    introduce,
+    rule,
+    thumbnail,
+    game,
+    teamMin,
+    teamMax,
+    teamReqMemCnt,
+    placeType,
+    discordLink,
+    location,
+    status,
+  }: ILeague = req.body;
+  if (!id) {
+    res.sendStatus(412);
+    return;
+  }
+
+  const league: ILeague = await League.findById(id);
+  if (!league) {
+    res.sendStatus(404);
+    return;
+  }
+
+  if (league.host !== token?.user?._id) {
+    res.sendStatus(403);
+    return;
+  }
+  if (teamMax && league.teams?.length! > teamMax) {
+    res.sendStatus(409);
+    return;
+  }
+
+  if (title) {
+    await league.updateOne({ title });
+  }
+  if (applicationDeadline) {
+    await league.updateOne({ leagueStartDay });
+  }
+  if (leagueEndDay) {
+    await league.updateOne({ leagueEndDay });
+  }
+  if (introduce) {
+    await league.updateOne({ introduce });
+  }
+  if (rule) {
+    await league.updateOne({ rule });
+  }
+  if (thumbnail) {
+    await league.updateOne({ thumbnail });
+    const base64Id = league._id.toString('base64');
+    const dir = join(__dirname, '..', 'public', 'images', 'thumbnails');
+    try {
+      readFileSync(join(dir, `${base64Id}.webp`));
+      unlinkSync(join(dir, `${base64Id}.webp`));
+      const buffer = thumbnail.split(';base64,')[1];
+      try {
+        await sharp(Buffer.from(buffer, 'base64'))
+          .webp({ lossless: true })
+          .toFile(join(dir, `${base64Id}.webp`));
+      } catch (err) {
+        console.error(err);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  }
+  if (game) {
+    await league.updateOne({ league });
+  }
+  if (teamMin) {
+    await league.updateOne({ teamMin });
+  }
+  if (teamMax) {
+    await league.updateOne({ teamMax });
+  }
+  if (teamReqMemCnt) {
+    await league.updateOne({ teamReqMemCnt });
+  }
+  if (placeType) {
+    await league.updateOne({ placeType });
+  }
+  if (discordLink) {
+    await league.updateOne({ discordLink });
+  }
+  if (location) {
+    await league.updateOne({ location });
+  }
+  if (status) {
+    await league.updateOne({ status });
+  }
+  res.sendStatus(200);
 };
 
 export const read = async (req: Request, res: Response) => {
