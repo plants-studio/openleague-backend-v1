@@ -11,6 +11,14 @@ import Friend, { IFriend } from '../models/Friend';
 import User, { IUser } from '../models/User';
 import Whitelist, { IWhitelist } from '../models/Whitelist';
 
+const hex = (str: string) => {
+  let result = '';
+  for (let i = 0; i < str.length; i += 1) {
+    result += str.charCodeAt(i);
+  }
+  return Number.parseInt(result, 10);
+};
+
 export const discord = async (req: Request, res: Response) => {
   const { token } = req.body;
   if (!token) {
@@ -93,7 +101,8 @@ export const edit = async (req: IRequest, res: Response) => {
       const buffer = profile.split(';base64,')[1];
       try {
         await sharp(Buffer.from(buffer, 'base64'))
-          .webp({ lossless: true })
+          .resize(150, 150)
+          .webp({ lossless: false })
           .toFile(join(dir, `${id}.webp`));
       } catch (err) {
         console.error(err);
@@ -203,6 +212,7 @@ export const signin = async (req: Request, res: Response) => {
 
   user.password = undefined;
 
+  const number = (hex(user._id.toString()) % 10) + 1;
   if (user.profile) {
     const id = user._id.toString('base64');
     const dir = join(__dirname, '..', 'public', 'images', 'profiles');
@@ -213,16 +223,17 @@ export const signin = async (req: Request, res: Response) => {
       const data = user.profile.split(';base64,')[1];
       try {
         await sharp(Buffer.from(data, 'base64'))
-          .webp({ lossless: true })
+          .resize(150, 150)
+          .webp({ lossless: false })
           .toFile(join(dir, `${id}.webp`));
         user.profile = `/images/profiles/${id}.webp`;
       } catch (err) {
         console.error(err);
-        user.profile = '/images/profiles/default.webp';
+        user.profile = `/images/profiles/default${number}.webp`;
       }
     }
   } else {
-    user.profile = '/images/profiles/default.webp';
+    user.profile = `/images/profiles/default${number}.webp`;
   }
 
   const accessToken = sign({ user }, process.env.ACCESS_KEY!, { expiresIn: '7h' });

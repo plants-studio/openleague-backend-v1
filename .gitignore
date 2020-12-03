@@ -121,7 +121,7 @@ src/public/*
 src/public/images/*
 !src/public/images/profiles/
 src/public/images/profiles/*
-!src/public/images/profiles/default.webp
+!src/public/images/profiles/default[0-9]*.webp
 !src/public/images/thumbnails
 src/public/images/thumbnails/*
 !src/public/images/thumbnails/etc
