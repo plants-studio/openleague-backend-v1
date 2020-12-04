@@ -122,7 +122,7 @@ export const list = async (req: Request, res: Response) => {
       if (search) {
         const result1: PaginateResult<ILeague> = await League.paginate(
           { game, $text: { $search: search as string } },
-          { page, limit, sort: { timestamp: -1 } },
+          { page, limit },
         );
         const result2 = await Promise.all(
           result1.docs.map(async (data) => {
@@ -160,7 +160,7 @@ export const list = async (req: Request, res: Response) => {
         );
         return result2;
       }
-      const result1 = await League.paginate({ game }, { page, limit, sort: { timestamp: -1 } });
+      const result1 = await League.paginate({ game }, { page, limit });
       const result2 = await Promise.all(
         result1.docs.map(async (data) => {
           const temp = data;
@@ -198,7 +198,12 @@ export const list = async (req: Request, res: Response) => {
       return result2;
     }),
   );
-  res.status(200).send(flat(result, Infinity));
+
+  res
+    .status(200)
+    .send(
+      flat(result, Infinity).sort((a: Date, b: Date) => b.getMilliseconds() - a.getMilliseconds()),
+    );
 };
 
 export const edit = async (req: IRequest, res: Response) => {
