@@ -132,23 +132,23 @@ export const list = async (req: Request, res: Response) => {
               const id = temp._id.toString('base64');
               const dir = join(__dirname, '..', 'public', 'images', 'thumbnails');
               try {
-                readFileSync(join(dir, `${id}.webp`));
-                temp.thumbnail = `/images/thumbnails/${id}.webp`;
+                readFileSync(join(dir, `pre_${id}.webp`));
+                temp.thumbnail = `/images/thumbnails/pre_${id}.webp`;
               } catch {
                 const buffer = temp.thumbnail.split(';base64,')[1];
                 try {
                   await sharp(Buffer.from(buffer, 'base64'))
                     .resize(356, 200)
                     .webp({ lossless: false, quality: 75 })
-                    .toFile(join(dir, `${id}.webp`));
-                  temp.thumbnail = `/images/thumbnails/${id}.webp`;
+                    .toFile(join(dir, `pre_${id}.webp`));
+                  temp.thumbnail = `/images/thumbnails/pre_${id}.webp`;
                 } catch (err) {
                   console.error(err);
-                  temp.thumbnail = `/images/thumbnails/${g}/default${number}.webp`;
+                  temp.thumbnail = `/images/thumbnails/${g}/pre_default${number}.webp`;
                 }
               }
             } else {
-              temp.thumbnail = `/images/thumbnails/${g}/default${number}.webp`;
+              temp.thumbnail = `/images/thumbnails/${g}/pre_default${number}.webp`;
             }
             temp.teams = undefined;
             temp.introduce = undefined;
@@ -169,23 +169,23 @@ export const list = async (req: Request, res: Response) => {
             const id = temp._id.toString('base64');
             const dir = join(__dirname, '..', 'public', 'images', 'thumbnails');
             try {
-              readFileSync(join(dir, `${id}.webp`));
-              temp.thumbnail = `/images/thumbnails/${id}.webp`;
+              readFileSync(join(dir, `pre_${id}.webp`));
+              temp.thumbnail = `/images/thumbnails/pre_${id}.webp`;
             } catch {
               const buffer = temp.thumbnail.split(';base64,')[1];
               try {
                 await sharp(Buffer.from(buffer, 'base64'))
                   .resize(356, 200)
                   .webp({ lossless: false, quality: 75 })
-                  .toFile(join(dir, `${id}.webp`));
-                temp.thumbnail = `/images/thumbnails/${id}.webp`;
+                  .toFile(join(dir, `pre_${id}.webp`));
+                temp.thumbnail = `/images/thumbnails/pre_${id}.webp`;
               } catch (err) {
                 console.error(err);
-                temp.thumbnail = `/images/thumbnails/${g}/default${number}.webp`;
+                temp.thumbnail = `/images/thumbnails/${g}/pre_default${number}.webp`;
               }
             }
           } else {
-            temp.thumbnail = `/images/thumbnails/${g}/default${number}.webp`;
+            temp.thumbnail = `/images/thumbnails/${g}/pre_default${number}.webp`;
           }
           temp.teams = undefined;
           temp.introduce = undefined;
@@ -268,6 +268,10 @@ export const edit = async (req: IRequest, res: Response) => {
         await sharp(Buffer.from(buffer, 'base64'))
           .resize(356, 200)
           .webp({ lossless: false, quality: 75 })
+          .toFile(join(dir, `pre_${base64Id}.webp`));
+        await sharp(Buffer.from(buffer, 'base64'))
+          .resize(1920, 1080)
+          .webp({ lossless: false })
           .toFile(join(dir, `${base64Id}.webp`));
       } catch (err) {
         console.error(err);
@@ -310,11 +314,33 @@ export const read = async (req: Request, res: Response) => {
     return;
   }
 
-  const league = await League.findById(id);
+  const league: ILeague = await League.findById(id);
   if (!league) {
     res.sendStatus(404);
     return;
   }
+  let g: string;
+  switch (league.game) {
+    case 'League Of Legend':
+      g = 'lol';
+      break;
+    case 'Overwatch':
+      g = 'overwatch';
+      break;
+    case 'Valorant':
+      g = 'valorant';
+      break;
+    case 'Battlegrounds':
+      g = 'pubg';
+      break;
+    case 'Rainbow Six Siege':
+      g = 'rainbowsix';
+      break;
+    default:
+      g = 'etc';
+      break;
+  }
+  const number = (hex(league._id.toString()) % 3) + 1;
 
   if (league.thumbnail) {
     const tempId = league._id.toString('base64');
@@ -326,17 +352,17 @@ export const read = async (req: Request, res: Response) => {
       const buffer = league.thumbnail.split(';base64,')[1];
       try {
         await sharp(Buffer.from(buffer, 'base64'))
-          .resize(356, 200)
-          .webp({ lossless: false, quality: 75 })
+          .resize(1920, 1080)
+          .webp({ lossless: false })
           .toFile(join(dir, `${tempId}.webp`));
         league.thumbnail = `/images/thumbnails/${tempId}.webp`;
       } catch (err) {
         console.error(err);
-        league.thumbnail = '/images/thumbnails/default.webp';
+        league.thumbnail = `/images/thumbnails/${g}/default${number}.webp`;
       }
     }
   } else {
-    league.thumbnail = '/images/thumbnails/default.webp';
+    league.thumbnail = `/images/thumbnails/${g}/default${number}.webp`;
   }
 
   res.status(200).send(league);
