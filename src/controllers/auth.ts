@@ -34,6 +34,30 @@ export const getData = async (req: Request, res: Response) => {
 
   user.password = undefined;
 
+  const number = (hex(user._id.toString()) % 10) + 1;
+  if (user.profile) {
+    const base64Id = user._id.toString('base64');
+    const dir = join(__dirname, '..', 'public', 'images', 'profiles');
+    try {
+      readFileSync(join(dir, `${base64Id}.webp`));
+      user.profile = `/images/profiles/${base64Id}.webp`;
+    } catch {
+      const data = user.profile.split(';base64,')[1];
+      try {
+        await sharp(Buffer.from(data, 'base64'))
+          .resize(150, 150)
+          .webp({ lossless: false })
+          .toFile(join(dir, `${base64Id}.webp`));
+        user.profile = `/images/profiles/${base64Id}.webp`;
+      } catch (err) {
+        console.error(err);
+        user.profile = `/images/profiles/default${number}.webp`;
+      }
+    }
+  } else {
+    user.profile = `/images/profiles/default${number}.webp`;
+  }
+
   res.status(200).send(user);
 };
 
