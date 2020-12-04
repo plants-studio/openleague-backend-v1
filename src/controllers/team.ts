@@ -46,7 +46,8 @@ export const create = async (req: IRequest, res: Response) => {
     leader: token?.user?._id,
   });
   await team.save();
-  await league.updateOne({ $push: { teams: team._id }, applicant: league.applicant! + 1 });
+  await hleague.updateOne({ $push: { teams: team._id }, applicant: league.applicant! + 1 });
+  res.sendStatus(200);
 };
 
 export const join = async (req: IRequest, res: Response) => {
