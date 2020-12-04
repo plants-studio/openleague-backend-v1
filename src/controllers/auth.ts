@@ -19,7 +19,7 @@ const hex = (str: string) => {
   return Number.parseInt(result, 10);
 };
 
-export const data = async (req: Request, res: Response) => {
+export const getData = async (req: Request, res: Response) => {
   const { id } = req.params;
   if (!id) {
     res.sendStatus(412);
