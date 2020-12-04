@@ -76,6 +76,66 @@
             "description": "Success"
           }
         }
+      },
+      "get": {
+        "tags": ["auth"],
+        "summary": "Get user data",
+        "description": "Get user data",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "User object id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "email": {
+                      "type": "string"
+                    },
+                    "discord": {
+                      "type": "string"
+                    },
+                    "friend": {
+                      "type": "string"
+                    },
+                    "notification": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "profile": {
+                      "type": "string"
+                    },
+                    "admin": {
+                      "type": "boolean"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "412": {
+            "description": "Precondition Failed"
+          }
+        }
       }
     },
     "/auth/discord": {
