@@ -202,7 +202,9 @@ export const list = async (req: Request, res: Response) => {
   res
     .status(200)
     .send(
-      flat(result, Infinity).sort((a: Date, b: Date) => b.getMilliseconds() - a.getMilliseconds()),
+      flat(result, Infinity).sort(
+        (a: ILeague, b: ILeague) => b.timestamp!.getMilliseconds() - a.timestamp!.getMilliseconds(),
+      ),
     );
 };
 
