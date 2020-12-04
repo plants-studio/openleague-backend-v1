@@ -8,6 +8,7 @@ const Team = new Schema(
     leader: Schema.Types.ObjectId,
     member: [Schema.Types.ObjectId],
     waiting: [Schema.Types.ObjectId],
+    timestamp: { type: Date, default: Date.now() },
   },
   {
     versionKey: false,
@@ -28,4 +29,5 @@ export interface ITeam extends Document {
   leader?: Schema.Types.ObjectId;
   member?: Schema.Types.ObjectId[];
   waiting?: Schema.Types.ObjectId[];
+  timestamp?: Date;
 }

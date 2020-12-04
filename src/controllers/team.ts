@@ -80,12 +80,15 @@ export const list = async (req: Request, res: Response) => {
   const page = Number.parseInt(tp!.toString(), 10);
   const limit = Number.parseInt(tl!.toString(), 10);
   if (search) {
-    const result = await Team.paginate({}, { page, limit });
+    const result = await Team.paginate({}, { page, limit, sort: { timestamp: -1 } });
     res.status(200).send(result);
     return;
   }
 
-  const result = await Team.paginate({ $text: { $search: search as string } }, { page, limit });
+  const result = await Team.paginate(
+    { $text: { $search: search as string } },
+    { page, limit, sort: { timestamp: -1 } },
+  );
   res.status(200).send(result);
 };
 

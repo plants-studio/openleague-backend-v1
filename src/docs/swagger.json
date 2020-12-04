@@ -1532,6 +1532,9 @@
             "items": {
               "type": "string"
             }
+          },
+          "timestamp": {
+            "type": "string"
           }
         }
       },
