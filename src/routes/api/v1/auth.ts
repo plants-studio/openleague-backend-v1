@@ -1,13 +1,13 @@
 import { Router } from 'express';
 
 import {
-  data, discord, edit, refresh, revoke, signin, signup,
+  discord, edit, getData, refresh, revoke, signin, signup,
 } from '../../../controllers/auth';
 
 const router = Router();
 
 router.put('/', edit);
-router.get('/:id', data);
+router.get('/:id', getData);
 router.post('/discord', discord);
 router.post('/refresh', refresh);
 router.post('/revoke', revoke);
