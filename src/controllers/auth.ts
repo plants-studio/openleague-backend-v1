@@ -19,6 +19,24 @@ const hex = (str: string) => {
   return Number.parseInt(result, 10);
 };
 
+export const data = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  if (!id) {
+    res.sendStatus(412);
+    return;
+  }
+
+  const user: IUser = await User.findById(id);
+  if (!user) {
+    res.sendStatus(404);
+    return;
+  }
+
+  user.password = undefined;
+
+  res.status(200).send(user);
+};
+
 export const discord = async (req: Request, res: Response) => {
   const { token } = req.body;
   if (!token) {
