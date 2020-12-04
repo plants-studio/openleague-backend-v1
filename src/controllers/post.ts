@@ -26,7 +26,7 @@ export const list = async (req: Request, res: Response) => {
       if (search) {
         const result1: PaginateResult<IPost> = await Post.paginate(
           { category: cate, $text: { $search: search as string } },
-          { page, limit },
+          { page, limit, sort: { timestamp: -1 } },
         );
         const result2 = await Promise.all(
           result1.docs.map((data) => {
@@ -41,7 +41,7 @@ export const list = async (req: Request, res: Response) => {
 
       const result1: PaginateResult<IPost> = await Post.paginate(
         { category: cate },
-        { page, limit },
+        { page, limit, sort: { timestamp: -1 } },
       );
       const result2 = await Promise.all(
         result1.docs.map((data) => {
