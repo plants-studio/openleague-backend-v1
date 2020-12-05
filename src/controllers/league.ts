@@ -239,7 +239,8 @@ export const edit = async (req: IRequest, res: Response) => {
     return;
   }
 
-  if (league.host !== token?.user?._id) {
+  if (league.host!.toString() !== token?.user?._id) {
+    console.log(league.host, token?.user?._id);
     res.sendStatus(403);
     return;
   }
@@ -389,7 +390,7 @@ export const remove = async (req: IRequest, res: Response) => {
     return;
   }
 
-  if (league.host !== token?.user?._id) {
+  if (league.host!.toString() !== token?.user?._id) {
     res.sendStatus(403);
     return;
   }
