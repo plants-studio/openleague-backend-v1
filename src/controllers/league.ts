@@ -57,7 +57,7 @@ export const create = async (req: IRequest, res: Response) => {
     res.sendStatus(412);
     return;
   }
-  if (title.length < 5 || title.length > 20) {
+  if (title.length <= 3 || title.length >= 50) {
     res.status(412).send('제목의 길이가 적절하지 않습니다. 5자 이상, 20자 이하로 해주세요.');
     return;
   }
