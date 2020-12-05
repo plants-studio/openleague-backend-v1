@@ -53,7 +53,7 @@ export const send = async (req: IRequest, res: Response) => {
           res.status(404).send('팀을 찾을 수 없습니다');
           return;
         }
-        if (team.leader !== token?.user?._id) {
+        if (team.leader!.toString() !== token?.user?._id) {
           res.sendStatus(403);
           return;
         }
@@ -73,7 +73,7 @@ export const send = async (req: IRequest, res: Response) => {
           res.status(404).send('리그를 찾을 수 없습니다');
           return;
         }
-        if (league.host !== token?.user?._id) {
+        if (league.host!.toString() !== token?.user?._id) {
           res.sendStatus(403);
           return;
         }

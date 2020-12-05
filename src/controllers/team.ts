@@ -31,7 +31,7 @@ export const create = async (req: IRequest, res: Response) => {
         err = true;
       }
     });
-    if (team.leader === token?.user?._id) {
+    if (team.leader!.toString() === token?.user?._id) {
       err = true;
     }
   });
@@ -106,7 +106,7 @@ export const remove = async (req: IRequest, res: Response) => {
     return;
   }
 
-  if (team.leader !== token?.user?._id) {
+  if (team.leader!.toString() !== token?.user?._id) {
     res.sendStatus(403);
     return;
   }
@@ -135,7 +135,7 @@ export const reply = async (req: IRequest, res: Response) => {
     return;
   }
 
-  if (token?.user?._id !== team.leader) {
+  if (token?.user?._id !== team.leader!.toString()) {
     res.sendStatus(403);
     return;
   }
@@ -173,7 +173,7 @@ export const waiting = async (req: IRequest, res: Response) => {
 
   if (
     team.member?.find((data) => data.toString() === token?.user?._id.toString())
-    || team.leader !== token?.user?._id
+    || team.leader!.toString() !== token?.user?._id
   ) {
     res.sendStatus(403);
   }
