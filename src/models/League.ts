@@ -48,9 +48,9 @@ export interface ILeague extends Document {
     | 'League Of Legend'
     | 'Overwatch'
     | 'Valorant'
-    | 'Battlegrounds'
+    | 'Battleground'
     | 'Rainbow Six Siege'
-    | 'etc';
+    | 'Etc';
   teamMin?: number;
   teamMax?: number;
   teamReqMemCnt?: number;

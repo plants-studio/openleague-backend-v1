@@ -338,7 +338,7 @@ export const read = async (req: Request, res: Response) => {
     case 'Valorant':
       g = 'valorant';
       break;
-    case 'Battlegrounds':
+    case 'Battleground':
       g = 'pubg';
       break;
     case 'Rainbow Six Siege':
