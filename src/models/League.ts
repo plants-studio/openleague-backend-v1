@@ -20,6 +20,7 @@ const League = new Schema(
     applicant: { type: Number, default: 0 },
     host: Schema.Types.ObjectId,
     teams: [Schema.Types.ObjectId],
+    members: [Schema.Types.ObjectId],
     status: { type: String, default: 'RECRUIT' },
     timestamp: { type: Date, default: Date.now() },
   },
@@ -60,6 +61,7 @@ export interface ILeague extends Document {
   applicant?: number;
   host?: Schema.Types.ObjectId;
   teams?: Schema.Types.ObjectId[];
+  members?: Schema.Types.ObjectId[];
   status: 'RECRUIT' | 'FULLED' | 'RECRUIT_DONE' | 'INPROGRESS' | 'COMPLETE' | 'CANCLED';
   timestamp?: Date;
 }
